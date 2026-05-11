@@ -3,6 +3,7 @@ package controller
 import (
 	"backend/databases"
 	"backend/models"
+	"backend/utils"
 	"context"
 	"time"
 
@@ -39,11 +40,22 @@ func RegisterUser(c *fiber.Ctx) error {
 	 user.Name = userRegister.Name
 	 user.Password = string(hashPassword)
 	
-	result := databases.DB.WithContext(ctx).Create(&user)
+	databases.DB.WithContext(ctx).Create(&user)
 
-	if result.Error != nil {
-		return c.Status(500).JSON()
+	token,err := utils.GenerateJwt(user.ID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error":"server cant generate your jwt token"})
 	}
+
+	cookie := fiber.Cookie{
+		Name: "jwt",//or any name example blablabla or ant ....
+		Value: token,
+		Expires: time.Now().Add(time.Hour * 24),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
 	 return c.JSON(fiber.Map{
 		"message":"success",
 	 })
