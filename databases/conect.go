@@ -1,6 +1,8 @@
 package databases
 
 import (
+	"backend/models"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -9,7 +11,7 @@ var DB *gorm.DB
 
 func Conect() {
 
-	dns :="host=localhost user=postgres password=13802002 dbname=piza port=5432 sslmode=disable"
+	dns :="host=localhost user=postgres password=13802002 dbname=pizza port=5432 sslmode=disable"
 
 	db,err := gorm.Open(postgres.Open(dns),&gorm.Config{})
 	if err != nil {
@@ -17,5 +19,5 @@ func Conect() {
 	}
 
 	DB =db
-	db.AutoMigrate()
+	db.AutoMigrate(&models.User{},&models.Role{},&models.Permission{})
 }
