@@ -3,8 +3,9 @@
 
 import { cookies } from "next/headers";
 import { IUser } from "@/interface";
+import axios, { AxiosError } from "axios";
 
-const GO_API_URL = process.env.GO_API_URL || "http://localhost:8080";
+const GO_API_URL = process.env.GO_API_URL;
 
 export const registerUser = async (payload: Partial<IUser>) => {
   try {
@@ -24,12 +25,12 @@ export const registerUser = async (payload: Partial<IUser>) => {
       role: payload.role || "customer",
     };
 
+    const cookieStore = await cookies();
+    const token = cookieStore.get("jwt")?.value;
+
     // 3. Call Go backend registration endpoint
-    const response = await fetch(`${GO_API_URL}/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      cache: "no-store",
+    const response = await axios.post(`${GO_API_URL}/register`, body, {
+      headers: { Cookie: `jwt=${token}` },
     });
 
     // 4. Handle backend responses
@@ -46,42 +47,6 @@ export const registerUser = async (payload: Partial<IUser>) => {
         message: "Invalid request data.",
       };
     }
-
-    if (!response.ok) {
-      const errorData = await response.text().catch(() => "Unknown error");
-      return {
-        success: false,
-        message: `Registration failed: ${response.status} ${errorData}`,
-      };
-    }
-
-    // 5. Extract the JWT token from the Go backend's Set‑Cookie header
-    const setCookieHeader = response.headers.get("set-cookie");
-    let jwtToken: string | null = null;
-
-    if (setCookieHeader) {
-      // Example: "jwt=eyJhbGciOi...; Path=/; Expires=..."
-      const match = setCookieHeader.match(/jwt=([^;]+)/);
-      if (match) jwtToken = match[1];
-    }
-
-    // 6. If no token found, we can't proceed safely – return error
-    if (!jwtToken) {
-      return {
-        success: false,
-        message: "Authentication token not received from server.",
-      };
-    }
-
-    // 7. Set the JWT cookie in the browser via Next.js server utilities
-    const cookieStore = await cookies();
-    cookieStore.set("jwt", jwtToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24,
-    });
 
     return {
       success: true,

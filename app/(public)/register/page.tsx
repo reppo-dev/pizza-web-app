@@ -15,6 +15,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { registerUser } from "@/action/users";
+import { useRouter } from "next/navigation";
 
 // ---------- Zod schema (all fields required) ----------
 const registerSchema = z.object({
@@ -32,18 +35,33 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
+  const router = useRouter(); // now works correctly
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
+    defaultValues: { name: "", email: "", password: "" },
   });
 
-  function onSubmit(values: RegisterFormValues) {
-    // Handle registration logic here (API call, etc.)
-    console.log(values);
+  async function onSubmit(values: RegisterFormValues) {
+    setServerError(null);
+    setIsLoading(true);
+
+    try {
+      const result = await registerUser(values);
+
+      if (!result.success) {
+        setServerError(result.message);
+      } else {
+        router.push("/"); // ✅ will redirect
+      }
+    } catch (error) {
+      setServerError("Something went wrong. Please try again.");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -124,13 +142,19 @@ export default function RegisterPage() {
                   </FormItem>
                 )}
               />
+              {serverError && (
+                <div className="rounded-md bg-red-50 p-3 text-sm font-medium text-red-700">
+                  {serverError}
+                </div>
+              )}
 
               {/* Submit Button */}
               <Button
                 type="submit"
+                disabled={isLoading}
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                Sign Up
+                {isLoading ? "Creating account..." : "Sign Up"}
               </Button>
             </form>
           </Form>
