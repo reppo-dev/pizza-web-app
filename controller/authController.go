@@ -21,14 +21,6 @@ func RegisterUser(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error":"Invalid request"})
 	 }
 
-	 var exist models.User
-
-	 err := databases.DB.WithContext(ctx).Where("email = ?",userRegister.Email).First(&exist).Error
-	 if err == nil{
-		return c.Status(409).JSON(fiber.Map{"error":"Email already exists"})
-	 }
-
-
 	 var user models.User
 
 	 hashPassword , err := bcrypt.GenerateFromPassword([]byte(userRegister.Password),14)
