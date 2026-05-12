@@ -33,10 +33,6 @@ export default function AdminDashboard() {
     fetchUser();
   }, []);
 
-  if (user?.role.ID !== 2) {
-    redirect("/");
-  }
-
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold text-primary mb-6">Admin Dashboard</h1>
