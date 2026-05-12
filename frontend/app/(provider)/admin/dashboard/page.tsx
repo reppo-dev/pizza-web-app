@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ProfileCard from "@/components/functional/profile-card";
 import { validateJwtTokenAndGetUser } from "@/action/token";
 import { User } from "@/interface";
-import { Skeleton } from "@/components/ui/skeleton"; // optional, for loading
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState<User | null>(null);
