@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
-import { registerUser } from "@/action/users";
+import { registerUser } from "@/action/register";
 import { useRouter } from "next/navigation";
 
 // ---------- Zod schema (all fields required) ----------
@@ -56,9 +56,8 @@ export default function RegisterPage() {
       } else {
         router.push("/");
       }
-    } catch (error) {
+    } catch {
       setServerError("Something went wrong. Please try again.");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

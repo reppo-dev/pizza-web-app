@@ -1,4 +1,3 @@
-// app/actions/register.action.ts
 "use server";
 
 import { IUser } from "@/interface";
@@ -20,7 +19,6 @@ export const registerUser = async (payload: Partial<IUser>) => {
       email: payload.email,
       name: payload.name,
       password: payload.password,
-      role: payload.role || "customer",
     };
 
     // 3. Call Go backend registration endpoint

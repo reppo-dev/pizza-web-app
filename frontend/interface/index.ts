@@ -5,3 +5,9 @@ export interface IUser {
   password: string;
   role: "customer" | "admin";
 }
+
+export interface LoginUser {
+  id: string;
+  email: string;
+  password: string;
+}

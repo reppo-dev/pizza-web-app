@@ -14,16 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { loginAction } from "@/action/login";
+import { toast } from "sonner"; // اگر از sonner استفاده می‌کنید
 
-// ---------- Fixed Zod schema ----------
+// ---------- Zod schema ----------
 const loginSchema = z.object({
   email: z
     .string()
@@ -33,29 +30,40 @@ const loginSchema = z.object({
     .string()
     .min(1, { message: "Password is required" })
     .min(6, { message: "Password must be at least 6 characters" }),
-  role: z
-    .string()
-    .min(1, { message: "Please select a role" })
-    .refine((val) => ["customer", "admin"].includes(val), {
-      message: "Role must be either customer or admin",
-    }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
-      role: "", // Start with empty string; will trigger validation
     },
   });
 
-  function onSubmit(values: LoginFormValues) {
-    // Handle login logic (API call, etc.)
-    console.log(values);
+  async function onSubmit(values: LoginFormValues) {
+    setServerError(null);
+    setIsLoading(true);
+
+    try {
+      const result = await loginAction(values);
+
+      if (!result.success) {
+        setServerError(result.message);
+      } else {
+        router.push("/");
+      }
+    } catch {
+      setServerError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -68,6 +76,13 @@ export default function LoginPage() {
           <p className="text-sm text-gray-500">Sign in to your account</p>
         </CardHeader>
         <CardContent>
+          {/* نمایش خطای سرور */}
+          {serverError && (
+            <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600">
+              {serverError}
+            </div>
+          )}
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               {/* Email Field */}
@@ -85,6 +100,7 @@ export default function LoginPage() {
                         placeholder="you@example.com"
                         {...field}
                         className="h-11"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -107,6 +123,7 @@ export default function LoginPage() {
                         placeholder="••••••••"
                         {...field}
                         className="h-11"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -114,47 +131,40 @@ export default function LoginPage() {
                 )}
               />
 
-              {/* Role Select Field */}
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-semibold text-primary">
-                      Role
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value || ""} // Keep controlled with empty fallback
-                    >
-                      <FormControl>
-                        <SelectTrigger className="h-11">
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="customer">Customer</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Remember Me & Forgot Password (اختیاری) */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="remember"
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="remember" className="text-sm text-gray-600">
+                    Remember me
+                  </label>
+                </div>
+                <Link
+                  href="/forgot-password"
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
 
               {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                disabled={isLoading}
               >
-                Sign In
+                {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
           </Form>
 
           {/* Link to Register */}
           <p className="mt-6 text-center text-sm text-gray-600">
-            Don’t have an account?{" "}
+            Don`t have an account?{" "}
             <Link
               href="/register"
               className="font-semibold text-primary underline underline-offset-4 hover:text-primary/80"
