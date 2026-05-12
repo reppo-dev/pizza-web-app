@@ -22,7 +22,9 @@ export const registerUser = async (payload: Partial<IUser>) => {
     };
 
     // 3. Call Go backend registration endpoint
-    const response = await axios.post(`${GO_API_URL}/register`, body);
+    const response = await axios.post(`${GO_API_URL}/register`, body, {
+      withCredentials: true,
+    });
 
     // 4. Handle backend responses
     if (response.status === 409) {

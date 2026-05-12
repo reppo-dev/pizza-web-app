@@ -2,6 +2,7 @@
 
 import { LoginUser } from "@/interface";
 import axios from "axios";
+import { cookies } from "next/headers";
 
 const GO_API_URL = process.env.GO_API_URL;
 
@@ -20,27 +21,34 @@ export const loginAction = async (paylod: Partial<LoginUser>) => {
 
     const response = await axios.post(`${GO_API_URL}/login`, body);
 
-    // 4. Handle backend responses
-    if (response.status === 409) {
-      return {
-        success: false,
-        message: "Email already exists.",
-      };
+    let token = response.data?.token;
+    if (!token) {
+      const setCookie = response.headers["set-cookie"];
+      if (setCookie && Array.isArray(setCookie)) {
+        const jwtCookie = setCookie.find((c) => c.startsWith("jwt="));
+        if (jwtCookie) {
+          token = jwtCookie.split(";")[0].split("=")[1];
+        }
+      }
     }
 
-    if (response.status === 400) {
-      return {
-        success: false,
-        message: "Invalid request data.",
-      };
+    if (!token) {
+      return { success: false, message: "No token received from server." };
     }
 
-    return {
-      success: true,
-      message: "Registration successful.",
-    };
+    // 3. تنظیم کوکی در مرورگر (از طریق پاسخ Server Action)
+    const cookieStore = await cookies();
+    cookieStore.set("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24, // 1 روز
+    });
+
+    return { success: true, message: "Login successful." };
   } catch (error: unknown) {
-    console.error("Registration error:", error);
+    console.error("Login error:", error);
     return {
       success: false,
       message: "An unexpected error occurred. Please try again.",
