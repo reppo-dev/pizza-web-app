@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { registerUser } from "@/action/register";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 // ---------- Zod schema (all fields required) ----------
 const registerSchema = z.object({
@@ -54,6 +55,7 @@ export default function RegisterPage() {
       if (!result.success) {
         setServerError(result.message);
       } else {
+        toast("Sign up success");
         router.push("/");
       }
     } catch {

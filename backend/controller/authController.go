@@ -53,6 +53,19 @@ func RegisterUser(c *fiber.Ctx) error {
 	 })
 }
 
+func GetUser(c *fiber.Ctx) error {
+	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
+	defer cancel()
+
+	cookie := c.Cookies("jwt")
+
+	if cookie == ""{
+		return c.SendStatus(fiber.StatusUnauthorized).JSON(fiber.Map{"error":"unauthenticated"})
+	}
+
+	var name type
+}
+
 func Login(c *fiber.Ctx) error {
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()

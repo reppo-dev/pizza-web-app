@@ -40,14 +40,13 @@ export const registerUser = async (payload: Partial<IUser>) => {
       return { success: false, message: "No token received from server." };
     }
 
-    // 3. تنظیم کوکی در مرورگر (از طریق پاسخ Server Action)
     const cookieStore = await cookies();
     cookieStore.set("jwt", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24, // 1 روز
+      maxAge: 60 * 60 * 24,
     });
 
     return { success: true, message: "Login successful." };
