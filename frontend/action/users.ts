@@ -25,13 +25,8 @@ export const registerUser = async (payload: Partial<IUser>) => {
       role: payload.role || "customer",
     };
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("jwt")?.value;
-
     // 3. Call Go backend registration endpoint
-    const response = await axios.post(`${GO_API_URL}/register`, body, {
-      headers: { Cookie: `jwt=${token}` },
-    });
+    const response = await axios.post(`${GO_API_URL}/register`, body);
 
     // 4. Handle backend responses
     if (response.status === 409) {
