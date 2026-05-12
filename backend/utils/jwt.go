@@ -21,7 +21,7 @@ func GenerateJwt(userId uint) (string, error) {
 }
 
 func ParseJwt(cookie string) (string,error) {
-	token,err := jwt.ParseWithClaims(cookie,jwt.StandardClaims{},func(t *jwt.Token) (interface{}, error) {
+	token,err := jwt.ParseWithClaims(cookie,&jwt.StandardClaims{},func(t *jwt.Token) (interface{}, error) {
 		return []byte(SekretKey),nil
 	})
 	if err != nil || !token.Valid {

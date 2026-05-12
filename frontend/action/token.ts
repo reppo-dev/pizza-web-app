@@ -1,7 +1,7 @@
+"use server";
+
 import { cookies } from "next/headers";
 import axios, { AxiosError } from "axios";
-
-const GO_API_URL = process.env.GO_API_URL;
 
 export const validateJwtTokenAndGetUser = async () => {
   try {
@@ -15,23 +15,15 @@ export const validateJwtTokenAndGetUser = async () => {
       };
     }
 
-    const response = await axios.get(`${GO_API_URL}/getuser`, {
+    const response = await axios.get(`http://localhost:8000/getuser`, {
       headers: {
         Cookie: `jwt=${token}`,
       },
-      // اگر بک‌اند شما CORS تنظیم کرده با withCredentials، نیاز نیست چون درخواست سرور به سرور است
     });
 
-    if (response.status === 200 && response.data) {
-      return {
-        success: true,
-        user: response.data, // فرض می‌کنیم بک‌اند اطلاعات کاربر را در data برگرداند
-      };
-    }
-
     return {
-      success: false,
-      message: "Failed to fetch user data",
+      success: true,
+      user: response.data,
     };
   } catch (error) {
     console.error("validateJwtTokenAndGetUser error:", error);
