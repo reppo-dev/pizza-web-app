@@ -60,10 +60,25 @@ func GetUser(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
 
 	if cookie == ""{
-		return c.SendStatus(fiber.StatusUnauthorized).JSON(fiber.Map{"error":"unauthenticated"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error":"unauthenticated"})
 	}
 
-	var name type
+	id , err := utils.ParseJwt(cookie)
+	if err != nil{
+		 return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+            "message": "invalid or expired token",
+        })
+	}
+
+	var user models.User
+
+	result := databases.DB.WithContext(ctx).Preload("Role").First(&user,id)
+	if result.Error != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error":"user not found"})
+	}
+
+	return c.JSON(user)
+	
 }
 
 func Login(c *fiber.Ctx) error {

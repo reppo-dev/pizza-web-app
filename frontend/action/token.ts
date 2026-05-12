@@ -1,33 +1,63 @@
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
+const GO_API_URL = process.env.GO_API_URL;
 
 export const validateJwtTokenAndGetUser = async () => {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("jwt")?.value;
 
-    const response = await axios.get(`/user`, {
-      headers: { Cookie: `jwt=${token}` },
+    if (!token) {
+      return {
+        success: false,
+        message: "No authentication token found",
+      };
+    }
+
+    const response = await axios.get(`${GO_API_URL}/getuser`, {
+      headers: {
+        Cookie: `jwt=${token}`,
+      },
+      // اگر بک‌اند شما CORS تنظیم کرده با withCredentials، نیاز نیست چون درخواست سرور به سرور است
     });
+
+    if (response.status === 200 && response.data) {
+      return {
+        success: true,
+        user: response.data, // فرض می‌کنیم بک‌اند اطلاعات کاربر را در data برگرداند
+      };
+    }
+
+    return {
+      success: false,
+      message: "Failed to fetch user data",
+    };
   } catch (error) {
-    console.error("JWT validation error:", error);
-    if (error instanceof jwt.JsonWebTokenError) {
-      return { success: false, message: "Invalid token signature" };
+    console.error("validateJwtTokenAndGetUser error:", error);
+
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 401) {
+        return {
+          success: false,
+          message: "Invalid or expired token",
+        };
+      }
+      if (error.response?.status === 404) {
+        return {
+          success: false,
+          message: "User not found",
+        };
+      }
+      return {
+        success: false,
+        message: error.response?.data?.message || "Server error",
+      };
     }
-    if (error instanceof jwt.TokenExpiredError) {
-      return { success: false, message: "Token expired" };
-    }
-    return { success: false, message: "Failed to validate token" };
+
+    return {
+      success: false,
+      message: "An unexpected error occurred",
+    };
   }
 };
-
-// مثال ساده از تابع findUserById (اگر از Prisma نیستید، با دیتابیس خود جایگزین کنید)
-async function findUserById(id: number) {
-  // اینجا بسته به پروژه خود کوئری بزنید
-  // مثال با SQL:
-  // const result = await db.query('SELECT id, email, name FROM users WHERE id = $1', [id]);
-  // return result.rows[0];
-  // فعلاً یک placeholder:
-  return null;
-}
