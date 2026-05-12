@@ -53,6 +53,13 @@ func RegisterUser(c *fiber.Ctx) error {
 	 })
 }
 
+func Login(c *fiber.Ctx) error {
+	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
+	defer cancel()
+
+	var user models.
+}
+
 
 func Logout(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{

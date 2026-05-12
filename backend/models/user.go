@@ -17,3 +17,8 @@ type RegisterUser struct {
     Password 		string `json:"-" gorm:"not null"`
 	RoleID          uint    	`json:"role_id"`
 }
+
+type LoginUser struct {
+    Email    		string `json:"email"`
+    Password 		string `json:"-" gorm:"not null"`
+}
