@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { loginAction } from "@/action/login";
-import { toast } from "sonner"; // اگر از sonner استفاده می‌کنید
+import { toast } from "sonner";
 
 // ---------- Zod schema ----------
 const loginSchema = z.object({
@@ -58,6 +58,7 @@ export default function LoginPage() {
         setServerError(result.message);
       } else {
         router.push("/");
+        toast("Login success");
       }
     } catch {
       setServerError("Something went wrong. Please try again.");

@@ -16,20 +16,9 @@ const LogOutButton = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        `http://localhost:8000/logout`,
-        {},
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
+      const response = await axios.post(`http://localhost:3000/logout`);
 
       if (response.status === 200) {
-        await axios.get("/api/auth/logout");
-
         toast.success("Logged out successfully!");
 
         router.push("/login");
