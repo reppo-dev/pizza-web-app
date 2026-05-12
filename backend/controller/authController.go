@@ -57,7 +57,37 @@ func Login(c *fiber.Ctx) error {
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 
-	var user models.
+	var data models.LoginUser
+
+	if err :=c.BodyParser(&data); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error":"Invalid request"})
+	}
+
+	var user models.User
+
+	databases.DB.WithContext(ctx).Where("email = ?",data.Email).Find(&user)
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password),[]byte(data.Password)); err != nil{
+		return c.Status(404).JSON(fiber.Map{"error":"incorect password"})
+	}
+
+	token , err := utils.GenerateJwt(user.ID)
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	cookie := fiber.Cookie{
+		Name: "jwt",
+		Value: token,
+		Expires: time.Now().Add(time.Hour * 24),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	return c.JSON(fiber.Map{
+		"message":"login success",
+	})
 }
 
 
