@@ -5,6 +5,7 @@ import ProfileCard from "@/components/functional/profile-card";
 import { validateJwtTokenAndGetUser } from "@/action/token";
 import { User } from "@/interface";
 import { Skeleton } from "@/components/ui/skeleton";
+import { redirect } from "next/navigation";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState<User | null>(null);
@@ -32,12 +33,9 @@ export default function AdminDashboard() {
     fetchUser();
   }, []);
 
-  // Optional: redirect if not authorized (check role)
-  // useEffect(() => {
-  //   if (user && user.role.name !== "admin") {
-  //     // redirect to /customer or /login
-  //   }
-  // }, [user]);
+  if (user?.role.ID !== 2) {
+    redirect("/");
+  }
 
   return (
     <div className="p-8">

@@ -23,7 +23,7 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  role: IRole; // آبجکت کامل
+  role: IRole;
 }
 
 export interface LoginUser {
