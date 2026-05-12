@@ -1,9 +1,8 @@
 // app/actions/register.action.ts
 "use server";
 
-import { cookies } from "next/headers";
 import { IUser } from "@/interface";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 const GO_API_URL = process.env.GO_API_URL;
 
@@ -17,7 +16,6 @@ export const registerUser = async (payload: Partial<IUser>) => {
       };
     }
 
-    // 2. Prepare payload (role defaults to "customer" if not provided)
     const body: Record<string, unknown> = {
       email: payload.email,
       name: payload.name,

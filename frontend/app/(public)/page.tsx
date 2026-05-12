@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Menu, X } from "lucide-react"; // icons for mobile menu
+import LogOutButton from "@/components/LogOutButton";
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -53,6 +54,7 @@ export default function HomePage() {
             >
               <Link href="/order">Order Now</Link>
             </Button>
+            <LogOutButton />
           </div>
 
           {/* Mobile menu toggle */}

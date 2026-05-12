@@ -54,7 +54,7 @@ export default function RegisterPage() {
       if (!result.success) {
         setServerError(result.message);
       } else {
-        router.push("/"); // ✅ will redirect
+        router.push("/");
       }
     } catch (error) {
       setServerError("Something went wrong. Please try again.");
