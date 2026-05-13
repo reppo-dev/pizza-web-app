@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const GO_API_URL = process.env.NEXT_PUBLIC_GO_API_URL || process.env.GO_API_URL;
-
 const LogOutButton = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
