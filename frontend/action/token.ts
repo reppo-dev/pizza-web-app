@@ -3,10 +3,17 @@
 import { cookies } from "next/headers";
 import axios, { AxiosError } from "axios";
 
+export async function getToken() {
+  const cookieStore = await cookies();
+
+  const token = cookieStore.get("jwt")?.value;
+
+  return token;
+}
+
 export const validateJwtTokenAndGetUser = async () => {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("jwt")?.value;
+    const token = await getToken();
 
     if (!token) {
       return {

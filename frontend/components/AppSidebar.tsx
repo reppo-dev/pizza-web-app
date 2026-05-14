@@ -1,6 +1,5 @@
 import * as React from "react";
 import { GalleryVerticalEnd } from "lucide-react";
-import { cookies } from "next/headers";
 
 import {
   Sidebar,
@@ -13,22 +12,16 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { SidebarMenuItems } from "./SidebarMenuItems";
+import { validateJwtTokenAndGetUser } from "@/action/token";
 import Link from "next/link";
 
-// تابع برای خوندن نقش کاربر از توکن JWT
 async function getUserRole(): Promise<"admin" | "customer"> {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("jwt")?.value;
+    const user = await validateJwtTokenAndGetUser();
+    const roleId = user.user.role_id;
 
-    if (!token) return "customer";
-
-    //decode کردن دستی بخش payload توکن
-    const payload = JSON.parse(
-      Buffer.from(token.split(".")[1], "base64").toString(),
-    );
-
-    return payload.role === "admin" ? "admin" : "customer";
+    if (roleId === 2) return "admin";
+    return "customer";
   } catch {
     return "customer";
   }
@@ -61,16 +54,13 @@ export async function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
 
-      {/* محتوای اصلی سایدبار - آیتم‌های منو */}
       <SidebarContent>
         <SidebarMenuItems role={role} />
       </SidebarContent>
 
-      {/* فوتر سایدبار - نشون دادن نقش کاربر */}
       <SidebarFooter>
         <div className="p-4 text-xs text-muted-foreground">
           <p>
-            ورود به عنوان{" "}
             <span className="font-medium">
               {role === "admin" ? "admin" : "customer"}
             </span>
