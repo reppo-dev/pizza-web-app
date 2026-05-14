@@ -54,7 +54,7 @@ export async function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="ml-2">
         <SidebarMenuItems role={role} />
       </SidebarContent>
 
