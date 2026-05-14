@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Menu, X } from "lucide-react"; // icons for mobile menu
 import LogOutButton from "@/components/LogOutButton";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
           {/* Logo */}
+          <SidebarTrigger />
           <Link
             href="/"
             className="text-2xl font-black tracking-tight text-primary"
