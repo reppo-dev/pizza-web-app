@@ -68,3 +68,19 @@ func UpdatePizza(c *fiber.Ctx) error {
 
 	return c.JSON(pizza)
 }
+
+func DeletePizza(c *fiber.Ctx) error {
+
+	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
+	defer cancel()
+
+	id,_:= strconv.Atoi(c.Params("id"))
+
+	var pizza models.Pizzas
+
+	databases.DB.WithContext(ctx).Delete(&pizza,id)
+
+	return c.JSON(fiber.Map{
+		"message":"delete succes",
+	})
+}
