@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { getToken } from "@/action/token";
+import { AutoCloseSidebar } from "@/components/AutoCloseSidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,10 +41,9 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SidebarProvider defaultOpen={false}>
+          <AutoCloseSidebar />
           <AppSidebar />
-          <SidebarInset>
-            <main>{children}</main>
-          </SidebarInset>
+          <main className="w-full">{children}</main>
         </SidebarProvider>
       </body>
     </html>

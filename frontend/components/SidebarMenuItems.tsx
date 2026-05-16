@@ -15,7 +15,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
+import LogOutButton from "./LogOutButton";
 
 interface MenuItem {
   title: string;
@@ -88,7 +90,7 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
   };
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className="overflow-hidden">
       {menuItems.map((item) => (
         <SidebarMenuItem key={item.title}>
           <SidebarMenuButton asChild isActive={isActive(item.url)} size="lg">
@@ -99,6 +101,12 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
+      <SidebarSeparator />
+      <SidebarMenuItem className="mt-2">
+        <SidebarMenuButton asChild>
+          <LogOutButton />
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     </SidebarMenu>
   );
 }
