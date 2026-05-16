@@ -22,7 +22,7 @@ import LogOutButton from "./LogOutButton";
 interface MenuItem {
   title: string;
   url: string;
-  icon: React.ReactNode; // اینو عوض کن
+  icon: React.ReactNode;
 }
 
 interface SidebarMenuItemsProps {
