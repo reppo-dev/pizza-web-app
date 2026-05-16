@@ -35,22 +35,22 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
   const adminMenu: MenuItem[] = [
     {
       title: "Dashboard",
-      url: "/dashboard",
+      url: "/admin/dashboard",
       icon: <LayoutDashboard className="size-5" />,
     },
     {
       title: "Pizzas",
-      url: "/dashboard/pizzas",
+      url: "/admin/dashboard/pizzas",
       icon: <Pizza className="size-5" />,
     },
     {
       title: "Orders",
-      url: "/dashboard/orders",
+      url: "/admin/dashboard/orders",
       icon: <ShoppingCart className="size-5" />,
     },
     {
       title: "Customers",
-      url: "/dashboard/customers",
+      url: "/admin/dashboard/customers",
       icon: <Users className="size-5" />,
     },
     {
@@ -60,7 +60,7 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
     },
     {
       title: "Profile",
-      url: "/dashboard/profile",
+      url: "/admin/dashboard/profile",
       icon: <User className="size-5" />,
     },
   ];
@@ -69,16 +69,20 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
     { title: "Pizzas", url: "/pizzas", icon: <Pizza className="size-5" /> },
     {
       title: "Orders",
-      url: "/orders",
+      url: "/customer/orders",
       icon: <ShoppingCart className="size-5" />,
     },
     {
       title: "Addresses",
-      url: "/addresses",
+      url: "/customer/addresses",
       icon: <MapPin className="size-5" />,
     },
     { title: "Help", url: "/help", icon: <HelpCircle className="size-5" /> },
-    { title: "Profile", url: "/profile", icon: <User className="size-5" /> },
+    {
+      title: "Profile",
+      url: "/customer/pizzas",
+      icon: <User className="size-5" />,
+    },
   ];
 
   const menuItems = role === "admin" ? adminMenu : customerMenu;
