@@ -31,3 +31,20 @@ export interface LoginUser {
   email: string;
   password: string;
 }
+
+export interface Variant {
+  ID: number;
+  type: string;
+  price: number;
+  pizza_id: number;
+  pizza?: Pizza;
+}
+
+export interface Pizza {
+  ID: number;
+  name: string;
+  description: string;
+  image: string;
+  status: string;
+  variants?: Variant[];
+}
