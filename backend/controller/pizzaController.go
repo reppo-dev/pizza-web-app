@@ -39,4 +39,6 @@ func CreatePizza(c *fiber.Ctx) error {
 	}
 
 	databases.DB.WithContext(ctx).Create(&pizza)
+	return c.JSON(pizza)
 }
+
