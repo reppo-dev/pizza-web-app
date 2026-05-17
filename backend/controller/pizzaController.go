@@ -18,7 +18,11 @@ func AllPizza(c *fiber.Ctx) error {
 	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 
-	databases.DB.WithContext(ctx).Preload("Variants").Find(&pizza)
+	if err := databases.DB.WithContext(ctx).Preload("Variants").Find(&pizza).Error ; err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":"Failed to get pizza",
+		})
+	}
 
 	return c.JSON(pizza)
 }
@@ -26,11 +30,20 @@ func AllPizza(c *fiber.Ctx) error {
 func GetPizza(c *fiber.Ctx) error {
 	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
-	id,_ := strconv.Atoi(c.Params("id"))
+	id,err := strconv.Atoi(c.Params("id"))
 
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":"Invalid pizza id",
+		})
+	}
 	var pizza models.Pizzas
 
-	databases.DB.WithContext(ctx).First(&pizza,id)
+	if err := databases.DB.WithContext(ctx).First(&pizza,id).Error; err !=nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":"Pizza not found",
+		})
+	}
 
 	return c.JSON(pizza)
 }
@@ -42,7 +55,11 @@ func CreatePizza(c *fiber.Ctx) error {
 	ctx ,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 
-	c.BodyParser(&data)
+	if err := c.BodyParser(&data);err !=nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":"Invalid request body",
+		})
+	}
 
 	pizza := models.Pizzas{
 		Name: data.Name,
@@ -51,30 +68,51 @@ func CreatePizza(c *fiber.Ctx) error {
 		Status: data.Status,
 	}
 
-	databases.DB.WithContext(ctx).Create(&pizza)
+	if err := databases.DB.WithContext(ctx).Create(&pizza).Error ; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":"Failed to create pizza",
+		})
+	}
 	return c.JSON(pizza)
 }
 
 func UpdatePizza(c *fiber.Ctx) error {
 
-	id , _ := strconv.Atoi(c.Params("id"))
+	id , err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":"Invalid pizza id",
+		})
+	}
 	var data models.PizzasCreatore
 
 	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
-	c.BodyParser(&data)
+	if err := c.BodyParser(&data);err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":"Invalid request body",
+		})
+	}
 
 	var pizza models.Pizzas
 
 	
-	databases.DB.WithContext(ctx).First(&pizza,id)
+	if err := databases.DB.WithContext(ctx).First(&pizza,id).Error; err != nil{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":"pizza not found",
+		})
+	}
 
     pizza.Name = data.Name
     pizza.Description = data.Description
     pizza.Image = data.Image
     pizza.Status = data.Status
 
-	databases.DB.WithContext(ctx).Save(&pizza)
+	if err :=databases.DB.WithContext(ctx).Save(&pizza).Error; err!=nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":"Failed to update pizza",
+		})
+	}
 
 
 
@@ -86,11 +124,26 @@ func DeletePizza(c *fiber.Ctx) error {
 	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 
-	id,_:= strconv.Atoi(c.Params("id"))
+	id,err:= strconv.Atoi(c.Params("id"))
+	if err !=nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":"Invalid pizza id",
+		})
+	}
 
 	var pizza models.Pizzas
 
-	databases.DB.WithContext(ctx).Delete(&pizza,id)
+	if err := databases.DB.WithContext(ctx).First(&pizza, id).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Pizza not found",
+		})
+	}
+
+	if err := databases.DB.WithContext(ctx).Delete(&pizza,id).Error; err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":"Failed to delete pizza",
+		})
+	}
 
 	return c.JSON(fiber.Map{
 		"message":"delete succes",
