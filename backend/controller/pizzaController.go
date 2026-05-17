@@ -23,6 +23,18 @@ func AllPizza(c *fiber.Ctx) error {
 	return c.JSON(pizza)
 }
 
+func GetPizza(c *fiber.Ctx) error {
+	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
+	defer cancel()
+	id,_ := strconv.Atoi(c.Params("id"))
+
+	var pizza models.Pizzas
+
+	databases.DB.WithContext(ctx).First(&pizza,id)
+
+	return c.JSON(pizza)
+}
+
 
 func CreatePizza(c *fiber.Ctx) error {
 	var data models.PizzasCreatore
