@@ -16,7 +16,7 @@ export interface IRole {
 }
 
 export interface User {
-  ID: number; // عددی هست، نه رشته
+  ID: number;
   CreatedAt: string;
   UpdatedAt: string;
   DeletedAt: string | null;
