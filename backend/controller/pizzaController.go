@@ -139,7 +139,7 @@ func DeletePizza(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := databases.DB.WithContext(ctx).Delete(&pizza,id).Error; err != nil{
+	if err := databases.DB.WithContext(ctx).Delete(&pizza).Error; err != nil{
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":"Failed to delete pizza",
 		})
