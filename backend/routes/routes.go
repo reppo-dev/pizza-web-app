@@ -20,9 +20,9 @@ func Setup(app *fiber.App) {
 	app.Put("/updatepizza/:id",controller.UpdatePizza)
 	app.Delete("/deletepizza/:id",controller.DeletePizza)
 
-	app.Get("/allvarient",controller.AllVariants)
-	app.Get("/getvarient/:id",controller.GetVariants)
-	app.Post("/createvarient",controller.CreateVariants)
-	app.Put("/updatevarient",controller.UpdateVariants)
-	app.Delete("/deletevarient",controller.DeleteVariants)
+	app.Get("/allvariant",controller.AllVariants)
+	app.Get("/getvariant/:id",controller.GetVariants)
+	app.Post("/createvariant",controller.CreateVariants)
+	app.Put("/updatevariant",controller.UpdateVariants)
+	app.Delete("/deletevariant",controller.DeleteVariants)
 }
