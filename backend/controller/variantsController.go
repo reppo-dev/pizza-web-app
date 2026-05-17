@@ -20,6 +20,16 @@ func AllVariants(c *fiber.Ctx) error {
 	return c.JSON(variants)
 }
 
+func GetVariants(c *fiber.Ctx) error {
+	id,_:= strconv.Atoi(c.Params("id"))
+
+	var variant models.Variants
+
+	databases.DB.WithContext(ctx).First(&variant,id)
+
+	return c.JSON(variant)
+}
+
 func CreateVariants(c *fiber.Ctx) error {
 	var data models.CreateVariants
 
