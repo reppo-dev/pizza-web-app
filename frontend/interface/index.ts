@@ -46,5 +46,11 @@ export interface Pizza {
   description: string;
   image: string;
   status: string;
-  variants?: Variant[];
+}
+
+export interface CreatePizza {
+  name: string;
+  description: string;
+  image: string;
+  status: string;
 }
