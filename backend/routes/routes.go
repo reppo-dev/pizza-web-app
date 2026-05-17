@@ -16,6 +16,6 @@ func Setup(app *fiber.App) {
 
 	app.Get("/allpizza",controller.AllPizza)
 	app.Post("/createpizza",controller.CreatePizza)
-	app.Put("/updatepizza",controller.UpdatePizza)
+	app.Put("/updatepizza/:id",controller.UpdatePizza)
 	app.Delete("/deletepizza/:id",controller.DeletePizza)
 }

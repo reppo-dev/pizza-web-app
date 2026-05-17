@@ -43,7 +43,7 @@ export async function createPizza(payload: CreatePizza) {
   }
 }
 
-export async function updatePizza(payload: CreatePizza) {
+export async function updatePizza(payload: CreatePizza, id: number) {
   try {
     if (
       !payload.name ||
@@ -57,7 +57,7 @@ export async function updatePizza(payload: CreatePizza) {
       };
     }
 
-    const result = await axios.put(`${payload}/updatepizza`, payload);
+    const result = await axios.put(`${payload}/updatepizza/${id}`, payload);
 
     return {
       success: true,
