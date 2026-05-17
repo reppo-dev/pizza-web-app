@@ -58,3 +58,18 @@ func UpdateVariants(c *fiber.Ctx) error {
 
 	return c.JSON(variants)
 }
+
+func DeleteVariants(c *fiber.Ctx) error {
+	id , _ := strconv.Atoi(c.Params("id"))
+
+	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
+	defer cancel()
+
+	var variants models.Variants
+
+	databases.DB.WithContext(ctx).Delete(&variants,id)
+
+	return c.JSON(fiber.Map{
+		"message":"delelet success",
+	})
+}
