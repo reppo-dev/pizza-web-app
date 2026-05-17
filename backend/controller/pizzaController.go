@@ -12,7 +12,7 @@ import (
 
 func AllPizza(c *fiber.Ctx) error {
 
-	var pizza models.Pizzas
+	var pizza []models.Pizzas
 
 	
 	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
