@@ -1,6 +1,5 @@
 import { CreatePizza } from "@/interface";
 import axios from "axios";
-import { success } from "zod";
 
 const GO_API_URL = process.env.GO_API_URL;
 
@@ -40,6 +39,50 @@ export async function createPizza(payload: CreatePizza) {
     return {
       success: false,
       message: "failed to create pizza",
+    };
+  }
+}
+
+export async function updatePizza(payload: CreatePizza) {
+  try {
+    if (
+      !payload.name ||
+      !payload.description ||
+      !payload.image ||
+      !payload.status
+    ) {
+      return {
+        success: false,
+        message: "failed to required all data!!!", //my english ha ha ha :/    this project for trayning
+      };
+    }
+
+    const result = await axios.put(`${payload}/updatepizza`, payload);
+
+    return {
+      success: true,
+      message: "update pizza success",
+    };
+  } catch {
+    return {
+      success: false,
+      message: "we cant updating your pizza",
+    };
+  }
+}
+
+export async function deletePizza(id: number) {
+  try {
+    const result = await axios.delete(`${GO_API_URL}//deletepizza/${id}`);
+
+    return {
+      success: true,
+      message: "pizza deleted",
+    };
+  } catch {
+    return {
+      success: false,
+      message: "we can't delete your pizza",
     };
   }
 }
