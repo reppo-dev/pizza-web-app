@@ -73,3 +73,43 @@ func CreateCategory(c *fiber.Ctx) error {
 
 	return c.JSON(category)
 }
+
+func UpdateCategory(c *fiber.Ctx) error {
+	ctx , cancel := context.WithTimeout(context.Background(),10*time.Second)
+	defer cancel()
+
+	id,err := strconv.Atoi(c.Params("id"))
+	if err !=nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":"Invalid category id",
+		})
+	}
+
+	var data models.CreateCategorys
+
+	if err := c.BodyParser(&data); err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":"Invalid request body",
+		})
+	}
+
+	var category models.Categorys
+
+	if err := databases.DB.WithContext(ctx).First(&category,id).Error; err != nil{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":"Filed to found category",
+		})
+	}
+
+	category.Name = data.Name
+	category.Slug = data.Slug
+
+	if err := databases.DB.WithContext(ctx).Save(&category).Error; err!=nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":"Filed update category",
+		})
+	}
+
+	return c.JSON(category)
+}
+
