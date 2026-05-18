@@ -58,3 +58,44 @@ export async function getVariant(id: number) {
     };
   }
 }
+
+export async function updateVariant(payload: Variant, id: number) {
+  try {
+    if (!payload.type || !payload.price || !payload.pizza_id) {
+      return {
+        success: false,
+        message: "failed to required data",
+      };
+    }
+    const result = await axios.put(
+      `${GO_API_URL}/updatevariant/${id}`,
+      payload,
+    );
+
+    return {
+      data: result.data,
+      success: true,
+    };
+  } catch {
+    return {
+      success: false,
+      message: "Failed to update variant",
+    };
+  }
+}
+
+export async function deleteVariant(id: number) {
+  try {
+    const result = await axios.delete(`${GO_API_URL}/deletevariant/${id}`);
+
+    return {
+      success: true,
+      message: "delete variant success",
+    };
+  } catch {
+    return {
+      success: false,
+      message: "Filed to delete variant",
+    };
+  }
+}

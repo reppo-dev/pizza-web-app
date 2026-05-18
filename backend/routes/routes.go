@@ -24,5 +24,5 @@ func Setup(app *fiber.App) {
 	app.Get("/getvariant/:id",controller.GetVariants)
 	app.Post("/createvariant",controller.CreateVariants)
 	app.Put("/updatevariant",controller.UpdateVariants)
-	app.Delete("/deletevariant",controller.DeleteVariants)
+	app.Delete("/deletevariant/:id",controller.DeleteVariants)
 }
