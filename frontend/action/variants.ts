@@ -1,6 +1,5 @@
 import { Variant } from "@/interface";
 import axios from "axios";
-import { success } from "zod";
 
 const GO_API_URL = process.env.GO_API_URL;
 

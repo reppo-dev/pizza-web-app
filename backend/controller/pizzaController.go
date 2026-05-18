@@ -66,6 +66,7 @@ func CreatePizza(c *fiber.Ctx) error {
 		Description: data.Description,
 		Image: data.Image,
 		Status: data.Status,
+		CategoryID: data.CategoryID,
 	}
 
 	if err := databases.DB.WithContext(ctx).Create(&pizza).Error ; err != nil {
@@ -107,6 +108,7 @@ func UpdatePizza(c *fiber.Ctx) error {
     pizza.Description = data.Description
     pizza.Image = data.Image
     pizza.Status = data.Status
+	pizza.CategoryID = data.CategoryID
 
 	if err :=databases.DB.WithContext(ctx).Save(&pizza).Error; err!=nil{
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
