@@ -32,7 +32,7 @@ func GetCategory(c *fiber.Ctx) error {
 	id,err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":"Invalid request category",
+			"error":"Invalid category id",
 		})
 	}
 
@@ -42,6 +42,32 @@ func GetCategory(c *fiber.Ctx) error {
 	if err := databases.DB.WithContext(ctx).First(&category,id).Error; err != nil{
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":"Filed to found category",
+		})
+	}
+
+	return c.JSON(category)
+}
+
+func CreateCategory(c *fiber.Ctx) error {
+	ctx , cancel := context.WithTimeout(context.Background(),10*time.Second)
+	defer cancel()
+
+	var data models.CreateCategorys
+
+	if err := c.BodyParser(&data) ; err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":"Invalid request body",
+		})
+	}
+	
+	category := models.Categorys{
+		Name: data.Name,
+		Slug: data.Slug,
+	}
+
+	if err := databases.DB.WithContext(ctx).Create(&category).Error;err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":"Filed to create category",
 		})
 	}
 
