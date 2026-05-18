@@ -54,3 +54,8 @@ export interface CreatePizza {
   image: string;
   status: string;
 }
+
+export interface Category {
+  name: string;
+  slug: string;
+}

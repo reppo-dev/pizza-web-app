@@ -1,4 +1,6 @@
+import { Category } from "@/interface";
 import axios from "axios";
+import { success } from "zod";
 
 const GO_API_URL = process.env.GO_API_URL;
 
@@ -30,6 +32,29 @@ export async function getCategory(id: number) {
     return {
       success: false,
       message: "Filed to get category",
+    };
+  }
+}
+
+export async function createCategory(payload: Category) {
+  try {
+    if (!payload.name || !payload.slug) {
+      return {
+        success: false,
+        message: "Filed required data",
+      };
+    }
+
+    const result = await axios.post(`${GO_API_URL}/createcategory`, payload);
+
+    return {
+      data: result.data,
+      success: true,
+    };
+  } catch {
+    return {
+      success: false,
+      message: "Filed create category",
     };
   }
 }
