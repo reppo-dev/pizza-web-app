@@ -20,7 +20,7 @@ export async function getAllVariants() {
   }
 }
 
-export async function getVarient(payload: Variant) {
+export async function createVarient(payload: Variant) {
   try {
     if (!payload.type || !payload.price || !payload.pizza_id) {
       return {
@@ -39,6 +39,22 @@ export async function getVarient(payload: Variant) {
     return {
       success: false,
       message: "Failed to create variant",
+    };
+  }
+}
+
+export async function getVariant(id: number) {
+  try {
+    const result = await axios.get(`${GO_API_URL}//getvariant/${id}`);
+
+    return {
+      data: result.data,
+      success: true,
+    };
+  } catch {
+    return {
+      success: false,
+      message: "Failed to get variant",
     };
   }
 }
