@@ -8,7 +8,7 @@ type Categorys struct {
 	Slug string `json:"slug"`
 }
 
-type createCategorys struct{
+type CreateCategorys struct{
 	Name string `json:"name"`
 	Slug string `json:"slug"`
 }
