@@ -1,6 +1,5 @@
 import { Category } from "@/interface";
 import axios from "axios";
-import { success } from "zod";
 
 const GO_API_URL = process.env.GO_API_URL;
 
@@ -55,6 +54,48 @@ export async function createCategory(payload: Category) {
     return {
       success: false,
       message: "Filed create category",
+    };
+  }
+}
+
+export async function updateCategory(payload: Category, id: number) {
+  try {
+    if (!payload.name || !payload.slug) {
+      return {
+        success: false,
+        message: "Filed required data",
+      };
+    }
+
+    const result = await axios.put(
+      `${GO_API_URL}/updatecategory/${id}`,
+      payload,
+    );
+
+    return {
+      data: result.data,
+      success: true,
+    };
+  } catch {
+    return {
+      success: false,
+      message: "Filed create category",
+    };
+  }
+}
+
+export async function deleteCategory(id: number) {
+  try {
+    await axios.delete(`${GO_API_URL}/deletecategory/${id}`);
+
+    return {
+      success: true,
+      message: "success delete category",
+    };
+  } catch {
+    return {
+      success: false,
+      message: "Filed delete category",
     };
   }
 }

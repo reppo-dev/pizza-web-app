@@ -29,7 +29,7 @@ func Setup(app *fiber.App) {
 	app.Get("/allcategory",controller.AllCategorys)
 	app.Get("/getcategory/:id",controller.GetCategory)
 	app.Post("/createcategory",controller.CreateCategory)
-	app.Put("/updatecategory",controller.UpdateCategory)
-	app.Delete("/deletecategory",controller.DeleteCartgory)
+	app.Put("/updatecategory/:id",controller.UpdateCategory)
+	app.Delete("/deletecategory/:id",controller.DeleteCartgory)
 	
 }
