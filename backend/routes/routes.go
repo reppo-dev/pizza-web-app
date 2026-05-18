@@ -25,4 +25,11 @@ func Setup(app *fiber.App) {
 	app.Post("/createvariant",controller.CreateVariants)
 	app.Put("/updatevariant",controller.UpdateVariants)
 	app.Delete("/deletevariant/:id",controller.DeleteVariants)
+
+	app.Get("/allcategory",controller.AllCategorys)
+	app.Get("/getcategory/:id",controller.GetCategory)
+	app.Post("/createcategory",controller.CreateCategory)
+	app.Put("/updatecategory",controller.UpdateCategory)
+	app.Delete("/deletecategory",controller.DeleteCartgory)
+	
 }
