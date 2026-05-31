@@ -19,7 +19,7 @@ const pizzaSchama = z.object({
   description: z.string().min(10, ""),
   image: z.string(),
   status: z.string(),
-  category_id: z.number().min(1, "please select one category"),
+  category_id: z.array(z.number()).min(1, "Select at least one category"),
 });
 
 type FromPizzaSchama = z.infer<typeof pizzaSchama>;
@@ -43,7 +43,7 @@ const CartCreatePizza = () => {
       name: "",
       description: "",
       image: "",
-      category_id: 0,
+      category_id: [],
       status: "",
     },
   });
@@ -53,6 +53,10 @@ const CartCreatePizza = () => {
       prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
     );
   };
+
+  useEffect(() => {
+    form.setValue("category_id", selectedCategory);
+  }, [selectedCategory, form]);
 
   async function onSubmit(data: FromPizzaSchama) {
     try {

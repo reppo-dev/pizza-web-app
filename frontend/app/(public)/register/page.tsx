@@ -36,7 +36,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
-  const router = useRouter(); // now works correctly
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -79,7 +79,6 @@ export default function RegisterPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              {/* Name Field */}
               <FormField
                 control={form.control}
                 name="name"
@@ -100,7 +99,6 @@ export default function RegisterPage() {
                 )}
               />
 
-              {/* Email Field */}
               <FormField
                 control={form.control}
                 name="email"
@@ -122,7 +120,6 @@ export default function RegisterPage() {
                 )}
               />
 
-              {/* Password Field */}
               <FormField
                 control={form.control}
                 name="password"
@@ -149,7 +146,6 @@ export default function RegisterPage() {
                 </div>
               )}
 
-              {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={isLoading}
@@ -160,9 +156,8 @@ export default function RegisterPage() {
             </form>
           </Form>
 
-          {/* Link to Login */}
           <p className="mt-6 text-center text-sm text-gray-600">
-            Already have an account?{" "}
+            Already have an account?
             <Link
               href="/login"
               className="font-semibold text-primary underline underline-offset-4 hover:text-primary/80"
