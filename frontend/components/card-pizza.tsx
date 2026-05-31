@@ -1,12 +1,32 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
-import { Button } from "./ui/button"; // از shadcn
-import { Pizza } from "@/interface";
+import { Button } from "./ui/button";
+import type { Pizza } from "@/interface";
 
 const CardPizza = ({ pizza }: { pizza: Pizza }) => {
-  const [activeVariant, setActiveVariant] = useState(pizza.variants[0]);
+  const [activeVariant, setActiveVariant] = useState(
+    pizza?.variants?.length > 0 ? pizza.variants[0] : null,
+  );
+
+  useEffect(() => {
+    if (pizza?.variants?.length > 0) {
+      setActiveVariant(pizza.variants[0]);
+    }
+  }, [pizza]);
+
+  if (!pizza?.variants?.length) {
+    return (
+      <Card>
+        <CardContent className="flex justify-center items-center">
+          <p>No variants available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!activeVariant) return null;
 
   return (
     <Card>
@@ -24,7 +44,7 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
           {pizza.variants.map((variant) => (
             <Button
               key={variant.ID}
-              variant={activeVariant.ID === variant.ID ? "default" : "outline"}
+              variant={activeVariant?.ID === variant.ID ? "default" : "outline"}
               size="sm"
               onClick={() => setActiveVariant(variant)}
             >
@@ -34,7 +54,7 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
         </div>
 
         <div className="text-lg font-bold">
-          ${activeVariant.price.toLocaleString()}
+          {activeVariant.price.toLocaleString()} تومان
         </div>
       </CardContent>
     </Card>
