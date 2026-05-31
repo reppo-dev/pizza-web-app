@@ -37,7 +37,6 @@ export interface Variant {
   type: string;
   price: number;
   pizza_id: number;
-  pizza?: Pizza;
 }
 
 export interface Pizza {
@@ -46,6 +45,7 @@ export interface Pizza {
   description: string;
   image: string;
   status: string;
+  variants: Variant[];
 }
 
 export interface CreatePizza {
