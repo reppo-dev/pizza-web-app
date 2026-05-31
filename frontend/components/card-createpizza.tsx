@@ -15,6 +15,7 @@ import { Label } from "./ui/label";
 import { allCategory } from "@/action/category";
 import { s3UploadAction } from "@/action/s3BucketAction";
 import Image from "next/image";
+import { FieldGroup } from "./ui/field";
 
 const pizzaSchama = z.object({
   name: z.string().min(2, ""),
@@ -28,17 +29,18 @@ type FromPizzaSchama = z.infer<typeof pizzaSchama>;
 
 const CartCreatePizza = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<number[]>([]);
-  const [category, setCategory] = useState<{ ID: number; name: string }[]>();
-  const [isImageAvalible, setIsImageAvalible] = useState(false);
+  const [selectedCategories, setSelectedCategory] = useState<number[]>([]);
+  const [categories, setCategories] = useState<{ ID: number; name: string }[]>(
+    [],
+  );
   const [isImagePath, setIsImagePath] = useState(``);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const resut = await allCategory();
-      setCategory(Array.isArray(resut.data) ? resut.data : []);
+    const fetchCategories = async () => {
+      const data = await allCategory();
+      setCategories(Array.isArray(data) ? data : []);
     };
-    fetchData();
+    fetchCategories();
   }, []);
 
   const form = useForm<FromPizzaSchama>({
@@ -59,23 +61,21 @@ const CartCreatePizza = () => {
   };
 
   useEffect(() => {
-    form.setValue("category_id", selectedCategory);
-  }, [selectedCategory, form]);
+    form.setValue("category_id", selectedCategories, { shouldDirty: true });
+  }, [selectedCategories]);
 
   const uploadImage: ChangeEventHandler<HTMLInputElement> = async (e) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
+
     const data = new FormData();
     data.set("file", file);
-
     const result = await s3UploadAction(data);
-    const imagePath = result.imagePath as string;
+    const fullUrl = result.imagePath as string;
 
     if (result.success) {
-      setIsImagePath(imagePath);
-      setIsImageAvalible(true);
-      form.setValue("image", imagePath);
+      setIsImagePath(result.imagePath!);
+      form.setValue("image", fullUrl);
     }
   };
 
@@ -85,11 +85,15 @@ const CartCreatePizza = () => {
       const result = await createPizza(data);
       if (result.success) {
         toast("Create Pizza success");
+        form.reset();
+        setSelectedCategory([]);
+        setIsImagePath("");
       } else {
         toast("Failed create pizza");
       }
-    } catch {
-      toast("Somthing wrong");
+    } catch (error) {
+      console.log(error);
+      toast("Something wrong");
     } finally {
       setIsLoading(false);
     }
@@ -102,99 +106,113 @@ const CartCreatePizza = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input className="h-11" {...field} placeholder="name" />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="description"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          className="h-11"
-                          {...field}
-                          placeholder="description"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="status"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Status</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="h-11"
-                          {...field}
-                          placeholder="description"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <div className="mb-4">
-                  <Label>Catrgories</Label>
-                  <div className="flex flex-wrap gap-3">
-                    {category?.map((cat) => (
-                      <Label key={cat.ID}>
-                        <Input
-                          type="checkbox"
-                          value={cat.ID}
-                          checked={selectedCategory.includes(cat.ID)}
-                          onChange={() => handleCategoryToggle(cat.ID)}
-                        />
-                      </Label>
-                    ))}
-                  </div>
-                </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">
-                    Upload new image
-                  </label>
-                  <Input
-                    type="file"
-                    accept="image/"
-                    onChange={uploadImage}
-                    disabled={isLoading}
+              <FieldGroup>
+                <div className="flex flex-col gap-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="h-11"
+                            {...field}
+                            placeholder="name"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
                   />
-                  {isImageAvalible && (
-                    <div className="mt-2">
-                      <p className="text-sm text-green-600">
-                        Image uploaded successfully!
-                      </p>
-                      <Image
-                        src={isImagePath}
-                        alt="New"
-                        width={32}
-                        height={32}
-                        className="w-32 h-32 object-cover mt-1 rounded border"
-                      />
+                  <FormField
+                    name="description"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            className="h-11"
+                            {...field}
+                            placeholder="description"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="status"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="h-11"
+                            {...field}
+                            placeholder="description"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">
+                      Categories
+                    </label>
+                    <div className="flex flex-wrap gap-3">
+                      {categories.map((cat) => (
+                        <label key={cat.ID} className="flex items-center gap-1">
+                          <Input
+                            type="checkbox"
+                            value={cat.ID}
+                            checked={selectedCategories.includes(cat.ID)}
+                            onChange={() => handleCategoryToggle(cat.ID)}
+                          />
+                          {cat.name}
+                        </label>
+                      ))}
                     </div>
-                  )}
+                    {selectedCategories.length === 0 && (
+                      <p className="text-sm text-red-500 mt-1">
+                        Select at least one category
+                      </p>
+                    )}
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">
+                      Upload new image
+                    </label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={uploadImage}
+                      disabled={isLoading}
+                    />
+                    {isImagePath && (
+                      <div className="mt-2">
+                        <p className="text-sm text-green-600">
+                          Image uploaded successfully!
+                        </p>
+                        <Image
+                          src={isImagePath}
+                          alt="New"
+                          width={32}
+                          height={32}
+                          className="w-32 h-32 object-cover mt-1 rounded border"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                  >
+                    {isLoading ? "Creating account..." : "Sign Up"}
+                  </Button>
                 </div>
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  {isLoading ? "Creating account..." : "Sign Up"}
-                </Button>
-              </div>
+              </FieldGroup>
             </form>
           </Form>
         </CardContent>

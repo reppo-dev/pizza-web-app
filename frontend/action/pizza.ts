@@ -1,3 +1,5 @@
+"use server";
+
 import { CreatePizza } from "@/interface";
 import axios from "axios";
 
@@ -57,7 +59,7 @@ export async function updatePizza(payload: CreatePizza, id: number) {
       };
     }
 
-    const result = await axios.put(`${payload}/updatepizza/${id}`, payload);
+    const result = await axios.put(`${GO_API_URL}/updatepizza/${id}`, payload);
 
     return {
       success: true,
@@ -73,7 +75,7 @@ export async function updatePizza(payload: CreatePizza, id: number) {
 
 export async function deletePizza(id: number) {
   try {
-    const result = await axios.delete(`${GO_API_URL}//deletepizza/${id}`);
+    const result = await axios.delete(`${GO_API_URL}/deletepizza/${id}`);
 
     return {
       success: true,

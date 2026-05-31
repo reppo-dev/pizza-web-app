@@ -11,7 +11,7 @@ import (
 )
 
 func AllCategorys(c *fiber.Ctx) error {
-	var category models.Categorys
+	var category []models.Categorys
 	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 
@@ -49,7 +49,7 @@ func GetCategory(c *fiber.Ctx) error {
 }
 
 func CreateCategory(c *fiber.Ctx) error {
-	ctx , cancel := context.WithTimeout(context.Background(),10*time.Second)
+	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 
 	var data models.CreateCategorys

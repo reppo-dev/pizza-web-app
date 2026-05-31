@@ -61,64 +61,84 @@ func CreatePizza(c *fiber.Ctx) error {
 		})
 	}
 
-	pizza := models.Pizzas{
-		Name: data.Name,
-		Description: data.Description,
-		Image: data.Image,
-		Status: data.Status,
-		CategoryID: data.CategoryID,
-	}
+   pizza := models.Pizzas{
+        Name:        data.Name,
+        Description: data.Description,
+        Image:       data.Image,
+        Status:      data.Status,
+    }
 
 	if err := databases.DB.WithContext(ctx).Create(&pizza).Error ; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":"Failed to create pizza",
 		})
 	}
+
+	    if len(data.CategoryID) > 0 {
+        var cats []models.Categorys
+        databases.DB.Find(&cats, data.CategoryID)
+        databases.DB.Model(&pizza).Association("Categories").Append(cats)
+    }
+
+
 	return c.JSON(pizza)
 }
 
 func UpdatePizza(c *fiber.Ctx) error {
+    id, err := strconv.Atoi(c.Params("id"))
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "error": "Invalid pizza id",
+        })
+    }
 
-	id , err := strconv.Atoi(c.Params("id"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":"Invalid pizza id",
-		})
-	}
-	var data models.PizzasCreatore
+    var data models.PizzasCreatore
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
 
-	ctx , cancel := context.WithTimeout(context.Background(),10 * time.Second)
-	defer cancel()
-	if err := c.BodyParser(&data);err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":"Invalid request body",
-		})
-	}
+    if err := c.BodyParser(&data); err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "error": "Invalid request body",
+        })
+    }
 
-	var pizza models.Pizzas
+    // پیتزا رو به همراه دسته‌بندی‌های فعلی لود کن
+    var pizza models.Pizzas
+    if err := databases.DB.WithContext(ctx).
+        Preload("Categories").
+        First(&pizza, id).Error; err != nil {
+        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+            "error": "Pizza not found",
+        })
+    }
 
-	
-	if err := databases.DB.WithContext(ctx).First(&pizza,id).Error; err != nil{
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error":"pizza not found",
-		})
-	}
-
+    // فیلدهای ساده رو آپدیت کن
     pizza.Name = data.Name
     pizza.Description = data.Description
     pizza.Image = data.Image
     pizza.Status = data.Status
-	pizza.CategoryID = data.CategoryID
 
-	if err :=databases.DB.WithContext(ctx).Save(&pizza).Error; err!=nil{
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error":"Failed to update pizza",
-		})
-	}
+    // جایگزینی کامل دسته‌بندی‌ها
+    if len(data.CategoryID) > 0 {
+        var newCats []models.Categorys
+        databases.DB.Find(&newCats, data.CategoryID)
+        // جایگزینی (قبلی‌ها حذف، جدیدها اضافه)
+        databases.DB.Model(&pizza).Association("Categories").Replace(newCats)
+    } else {
+        // اگر هیچ دسته‌بندی انتخاب نشده، همه رو حذف کن
+        databases.DB.Model(&pizza).Association("Categories").Clear()
+    }
 
+    // ذخیره کلی (اختیاری؛ چون Replace خودش تغییرات رو سیو می‌کنه)
+    if err := databases.DB.WithContext(ctx).Save(&pizza).Error; err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Failed to update pizza",
+        })
+    }
 
-
-	return c.JSON(pizza)
+    // پاسخ نهایی با Preload
+    databases.DB.Preload("Categories").First(&pizza, pizza.ID)
+    return c.JSON(pizza)
 }
 
 func DeletePizza(c *fiber.Ctx) error {

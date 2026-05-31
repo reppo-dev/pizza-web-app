@@ -9,22 +9,23 @@ export async function s3UploadAction(data: FormData) {
 
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
-  const uniqueName = `${Date.now}_${file.name}`;
+  const uniqueFileName = `${Date.now()}_${file.name}`;
 
   const params = {
     Body: buffer,
-    Bucket: process.env.PARSPACK_BUCKET_NAME,
-    Key: uniqueName,
+    Bucket: process.env.PARSPACK_BUCKET_NAME!,
+    Key: uniqueFileName,
     ContentType: file.type,
   };
 
   try {
     await s3Client.send(new PutObjectCommand(params));
 
-    const imageUrl = `${process.env.PARSPACK_ENDPOINT}/${process.env.PARSPACK_BUCKET_NAME}/${uniqueName}`;
+    const imageUrl = `https://c675240.parspack.net/${process.env.PARSPACK_BUCKET_NAME}/${uniqueFileName}`;
 
     return { success: true as const, imagePath: imageUrl };
   } catch (error) {
+    console.error("Upload error:", error);
     return {
       success: false as const,
       error: error instanceof Error ? error.message : "Upload failed",

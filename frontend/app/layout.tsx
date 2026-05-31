@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { getToken } from "@/action/token";
 import { AutoCloseSidebar } from "@/components/AutoCloseSidebar";
 import { GlobalSpinner } from "./globalSpinner";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default async function RootLayout({
           <AppSidebar />
           <main className="w-full">
             <GlobalSpinner /> {children}
+            <Toaster />
           </main>
         </SidebarProvider>
       </body>

@@ -1,4 +1,5 @@
-// app/actions/upload.action.ts
+"use server";
+
 import axios from "axios";
 
 const GO_API_URL = process.env.GO_API_URL;

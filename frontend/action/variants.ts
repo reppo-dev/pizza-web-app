@@ -1,3 +1,5 @@
+"use server";
+
 import { Variant } from "@/interface";
 import axios from "axios";
 

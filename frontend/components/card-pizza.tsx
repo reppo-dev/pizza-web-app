@@ -6,27 +6,16 @@ import { Button } from "./ui/button";
 import type { Pizza } from "@/interface";
 
 const CardPizza = ({ pizza }: { pizza: Pizza }) => {
+  const variants = pizza.variants ?? [];
   const [activeVariant, setActiveVariant] = useState(
-    pizza?.variants?.length > 0 ? pizza.variants[0] : null,
+    variants.length > 0 ? variants[0] : null,
   );
 
   useEffect(() => {
-    if (pizza?.variants?.length > 0) {
-      setActiveVariant(pizza.variants[0]);
+    if (variants.length > 0) {
+      setActiveVariant(variants[0]);
     }
-  }, [pizza]);
-
-  if (!pizza?.variants?.length) {
-    return (
-      <Card>
-        <CardContent className="flex justify-center items-center">
-          <p>No variants available</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!activeVariant) return null;
+  }, [variants]);
 
   return (
     <Card>
@@ -40,22 +29,32 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
           {pizza.status}
         </span>
 
-        <div className="flex gap-2 mt-2">
-          {pizza.variants.map((variant) => (
-            <Button
-              key={variant.ID}
-              variant={activeVariant?.ID === variant.ID ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveVariant(variant)}
-            >
-              {variant.type}
-            </Button>
-          ))}
-        </div>
+        {variants.length > 0 ? (
+          <>
+            <div className="flex gap-2 mt-2">
+              {variants.map((variant) => (
+                <Button
+                  key={variant.ID}
+                  variant={
+                    activeVariant?.ID === variant.ID ? "default" : "outline"
+                  }
+                  size="sm"
+                  onClick={() => setActiveVariant(variant)}
+                >
+                  {variant.type}
+                </Button>
+              ))}
+            </div>
 
-        <div className="text-lg font-bold">
-          {activeVariant.price.toLocaleString()} تومان
-        </div>
+            <div className="text-lg font-bold">
+              {activeVariant?.price.toLocaleString() ?? "0"} تومان
+            </div>
+          </>
+        ) : (
+          <div className="text-sm text-muted-foreground mt-2">
+            No variants available.
+          </div>
+        )}
       </CardContent>
     </Card>
   );

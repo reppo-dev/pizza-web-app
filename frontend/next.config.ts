@@ -1,30 +1,39 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   images: {
-    domains: [
-      "sibche.com",
-      "www.webpouya.com",
-      "localhost",
-      "dkstatics-public.digikala.com",
-    ],
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "sibche.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.webpouya.com",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "dkstatics-public.digikala.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.digikala.com",
+      },
+      {
+        protocol: "https",
         hostname: "c675240.parspack.net",
-        port: "",
-        pathname: "/c675240/**",
       },
     ],
   },
   async rewrites() {
     return [
       {
-        source: "/:path*",
-        destination: "http://localhost:8000/:path*",
+        source: "/api/:path*",
+        destination: "http://localhost:8000/api/:path*",
       },
     ];
   },
 };
-
 export default nextConfig;

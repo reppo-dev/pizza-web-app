@@ -1,3 +1,5 @@
+"use server";
+
 import { Category } from "@/interface";
 import axios from "axios";
 
@@ -5,12 +7,9 @@ const GO_API_URL = process.env.GO_API_URL;
 
 export async function allCategory() {
   try {
-    const result = await axios.get(`/${GO_API_URL}/allcategory`);
+    const result = await axios.get(`${GO_API_URL}/allcategory`);
 
-    return {
-      success: true,
-      data: result.data,
-    };
+    return result.data;
   } catch {
     return {
       success: false,

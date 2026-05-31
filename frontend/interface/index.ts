@@ -46,6 +46,7 @@ export interface Pizza {
   image: string;
   status: string;
   variants: Variant[];
+  categories: Category[];
 }
 
 export interface CreatePizza {
