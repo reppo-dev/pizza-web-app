@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
       "localhost",
       "dkstatics-public.digikala.com",
     ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "c675240.parspack.net",
+        port: "",
+        pathname: "/c675240/**",
+      },
+    ],
   },
   async rewrites() {
     return [

@@ -7,12 +7,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useEffect, useState } from "react";
+import { ChangeEventHandler, useEffect, useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { createPizza } from "@/action/pizza";
 import { toast } from "sonner";
 import { Label } from "./ui/label";
 import { allCategory } from "@/action/category";
+import { s3UploadAction } from "@/action/s3BucketAction";
+import Image from "next/image";
 
 const pizzaSchama = z.object({
   name: z.string().min(2, ""),
@@ -28,6 +30,8 @@ const CartCreatePizza = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number[]>([]);
   const [category, setCategory] = useState<{ ID: number; name: string }[]>();
+  const [isImageAvalible, setIsImageAvalible] = useState(false);
+  const [isImagePath, setIsImagePath] = useState(``);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,6 +61,23 @@ const CartCreatePizza = () => {
   useEffect(() => {
     form.setValue("category_id", selectedCategory);
   }, [selectedCategory, form]);
+
+  const uploadImage: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+    const data = new FormData();
+    data.set("file", file);
+
+    const result = await s3UploadAction(data);
+    const imagePath = result.imagePath as string;
+
+    if (result.success) {
+      setIsImagePath(imagePath);
+      setIsImageAvalible(true);
+      form.setValue("image", imagePath);
+    }
+  };
 
   async function onSubmit(data: FromPizzaSchama) {
     try {
@@ -140,6 +161,31 @@ const CartCreatePizza = () => {
                       </Label>
                     ))}
                   </div>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">
+                    Upload new image
+                  </label>
+                  <Input
+                    type="file"
+                    accept="image/"
+                    onChange={uploadImage}
+                    disabled={isLoading}
+                  />
+                  {isImageAvalible && (
+                    <div className="mt-2">
+                      <p className="text-sm text-green-600">
+                        Image uploaded successfully!
+                      </p>
+                      <Image
+                        src={isImagePath}
+                        alt="New"
+                        width={32}
+                        height={32}
+                        className="w-32 h-32 object-cover mt-1 rounded border"
+                      />
+                    </div>
+                  )}
                 </div>
                 <Button
                   type="submit"
