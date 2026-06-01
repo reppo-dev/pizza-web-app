@@ -4,6 +4,7 @@ import (
 	"backend/databases"
 	"backend/models"
 	"backend/utils"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -125,4 +126,61 @@ func AddToCart(c *fiber.Ctx) error {
 
 
 	return c.JSON(fiber.Map{"message":"Pizza added to cart successfully"})
+}
+
+func UpdateCartItem(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request id"})
+	}
+
+	var req struct{
+		Quantity  int `json:"quantity"`
+	}
+
+	var cartitem models.CartItem
+
+	if err := databases.DB.First(&cartitem,id).Error; err != nil{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error":"Failed found cart item"})
+	}
+
+	cartitem.Quantity = req.Quantity
+	if cartitem.Quantity <= 0 {
+		cartitem.Quantity = 1
+	}
+
+	if err := databases.DB.Save(&cartitem).Error;err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed update cart item"})
+	}
+
+	return c.JSON(fiber.Map{"message":"success update cart item"})
+}
+
+func DeleteCartItem(c *fiber.Ctx) error {
+	cookie := c.Cookies("jwt")
+	
+	userId,err := utils.ParseJwt(cookie)
+
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error":"Invalid or epired token"})
+	}
+
+	var cart models.Cart
+
+	if err := databases.DB.Where("user_id = ?",userId).First(&cart).Error; err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed found cart"})
+	}
+
+	itemId,err := strconv.Atoi(c.Params("id"))
+	if err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request id"})
+	}
+
+	if err := databases.DB.Where("id = ? AND cart_id = ?",itemId,cart.ID).Delete(&models.CartItem{}).Error; err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed delete cart item"})
+	}
+
+	return c.JSON(fiber.Map{"message":"success delete cart item"})
+
 }
