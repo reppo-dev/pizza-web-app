@@ -1,5 +1,6 @@
 "use client";
 
+import { logout } from "@/action/logout";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -14,8 +15,8 @@ const LogOutButton = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`http://localhost:3000/logout`);
-      if (response.status === 200) {
+      const response = await logout();
+      if (response.success) {
         toast.success("Logged out successfully!");
 
         router.push("/login");
