@@ -47,7 +47,7 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
             </div>
 
             <div className="text-lg font-bold">
-              {activeVariant?.price.toLocaleString() ?? "0"} تومان
+              ${activeVariant?.price.toLocaleString() ?? "0"}
             </div>
           </>
         ) : (

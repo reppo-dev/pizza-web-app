@@ -5,7 +5,6 @@ import ProfileCard from "@/components/functional/profile-card";
 import { validateJwtTokenAndGetUser } from "@/action/token";
 import { User } from "@/interface";
 import { Skeleton } from "@/components/ui/skeleton";
-import { redirect } from "next/navigation";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState<User | null>(null);
@@ -49,7 +48,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {!loading && !error && <ProfileCard user={user} />}
+      {!loading && !error && <ProfileCard user={user!} />}
     </div>
   );
 }
