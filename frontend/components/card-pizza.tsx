@@ -19,8 +19,14 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
 
   return (
     <Card>
-      <CardHeader>
-        <Image src={pizza.image} alt={pizza.name} width={300} height={200} />
+      <CardHeader className="justify-center">
+        <Image
+          src={pizza.image}
+          className="rounded-sm"
+          alt={pizza.name}
+          width={300}
+          height={200}
+        />
       </CardHeader>
       <CardContent className="space-y-3">
         <h3 className="font-semibold text-lg">{pizza.name}</h3>

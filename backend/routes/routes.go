@@ -33,4 +33,6 @@ func Setup(app *fiber.App) {
 	app.Delete("/deletecategory/:id",controller.DeleteCartgory)
 
 	app.Post("/upload",controller.Upload)
+
+	app.Get("/users",controller.AllUsers)
 }

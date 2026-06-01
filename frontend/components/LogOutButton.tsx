@@ -2,7 +2,6 @@
 
 import { logout } from "@/action/logout";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
