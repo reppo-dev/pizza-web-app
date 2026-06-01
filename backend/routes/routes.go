@@ -35,5 +35,5 @@ func Setup(app *fiber.App) {
 	app.Post("/upload",controller.Upload)
 
 	app.Get("/users",controller.AllUsers)
-	app.Get("/user",controller.User)
+	app.Get("/user/:id",controller.User)
 }
