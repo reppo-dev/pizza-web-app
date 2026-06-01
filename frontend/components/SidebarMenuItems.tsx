@@ -66,7 +66,11 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
   ];
 
   const customerMenu: MenuItem[] = [
-    { title: "Pizzas", url: "/pizzas", icon: <Pizza className="size-5" /> },
+    {
+      title: "Pizzas",
+      url: "/customer/pizzas",
+      icon: <Pizza className="size-5" />,
+    },
     {
       title: "Orders",
       url: "/customer/orders",
@@ -80,7 +84,7 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
     { title: "Help", url: "/help", icon: <HelpCircle className="size-5" /> },
     {
       title: "Profile",
-      url: "/customer/pizzas",
+      url: "/customer/profile",
       icon: <User className="size-5" />,
     },
   ];
