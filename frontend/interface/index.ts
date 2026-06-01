@@ -73,11 +73,3 @@ export interface CartItem {
   variant_name: string;
   price: number;
 }
-
-export interface AddToCart {
-  cart_id: number;
-  pizza_id: number;
-  quantity: number;
-  variant_name: string;
-  price: number;
-}
