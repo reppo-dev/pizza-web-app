@@ -44,8 +44,8 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
       icon: <Pizza className="size-5" />,
     },
     {
-      title: "Orders",
-      url: "/admin/dashboard/orders",
+      title: "Cart",
+      url: "/admin/dashboard/cart",
       icon: <ShoppingCart className="size-5" />,
     },
     {
@@ -67,8 +67,8 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
       icon: <Pizza className="size-5" />,
     },
     {
-      title: "Orders",
-      url: "/customer/orders",
+      title: "Cart",
+      url: "/customer/cart",
       icon: <ShoppingCart className="size-5" />,
     },
     {
