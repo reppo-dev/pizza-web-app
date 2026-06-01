@@ -48,3 +48,81 @@ func Cart(c *fiber.Ctx) error {
 	 return c.JSON(fiber.Map{"cart":cart,"items":cart.Item,"total":total,"count":  len(cart.Item),})
 }
 
+func AddToCart(c *fiber.Ctx) error {
+	
+	cookie := c.Cookies("jwt")
+
+	if cookie == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error":"Missin authentication token"})
+	}
+
+	userId,err := utils.ParseJwt(cookie)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error":"Invalid or expired token"})
+	}
+
+	 var req struct {
+		VariantID string `json:"variant_id"`
+        PizzaID uint   `json:"pizza_id"`
+        Quantity  int  `json:"quantity"`
+    }
+
+	if req.Quantity <= 0 {
+		req.Quantity = 1
+	}
+
+	var cart models.Cart
+
+	result := databases.DB.Where("user_id = ?" ,userId).First(&cart)
+
+	if result.Error == gorm.ErrRecordNotFound {
+		cart = models.Cart{UserID: userId}
+		if err := databases.DB.Create(&cart).Error;err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed create cart"})
+		}
+
+	} else if result.Error != nil{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error":"Pizza not found"})
+	}
+
+	var variant models.Variants
+
+	if err := databases.DB.First(&variant,req.VariantID).Error; err != nil{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error":"failed found variant"})
+	}
+
+	var pizza models.Pizzas
+
+	if err := databases.DB.First(&pizza,req.PizzaID).Error;err != nil{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error":"Pizza not found"})
+	}
+
+	var cartitem models.CartItem
+
+	err = databases.DB.Where("cart_id = ? AND pizza_id = ?",cart.ID,pizza.ID).First(&cartitem).Error
+
+	if err == nil{
+		cartitem.Quantity += req.Quantity
+
+		if err := databases.DB.Save(&cartitem).Error; err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed to update"})
+		}
+	} else if err == gorm.ErrRecordNotFound {
+		newItem := models.CartItem{
+			CartID: cart.ID,
+			PizzaID: pizza.ID,
+			Quantity: req.Quantity,
+			VariantName: variant.Type,
+			Price: float64(variant.Price),
+		}
+
+		if err := databases.DB.Save(&newItem).Error; err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed save new item"})
+		} else {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Database error"})
+		}
+	}
+
+
+	return c.JSON(fiber.Map{"message":"Pizza added to cart successfully"})
+}
