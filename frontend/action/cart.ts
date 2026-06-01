@@ -51,7 +51,7 @@ export async function addToCart(
         headers: authHeaders(token),
       },
     );
-    console.log(response);
+    console.log(response.data);
 
     return {
       success: true,
@@ -59,5 +59,55 @@ export async function addToCart(
     };
   } catch {
     return { success: false, message: "Failed added pizza to cart item" };
+  }
+}
+
+export async function updateCartItem(id: number, quantity: number) {
+  try {
+    const token = await getToken();
+    if (!token) return { success: false, message: "Not authenticated" };
+
+    const response = await axios.put(
+      `${GO_API_URL}/updatecartitem/${id}`,
+      JSON.stringify({ quantity }),
+      { headers: authHeaders(token) },
+    );
+
+    console.log(response.data);
+
+    return {
+      success: true,
+      message: "success update quantity",
+    };
+  } catch {
+    return {
+      success: false,
+      message: "falied update quantity",
+    };
+  }
+}
+
+export async function deleteCartItem(itemId: number) {
+  try {
+    const token = await getToken();
+    if (!token) return { success: false, message: "Not authenticated" };
+
+    const response = await axios.delete(
+      `${GO_API_URL}/deletecartitem/${itemId}`,
+      {
+        headers: authHeaders(token),
+      },
+    );
+
+    console.log(response.data);
+    return {
+      success: true,
+      message: "cart item deleted",
+    };
+  } catch {
+    return {
+      success: false,
+      message: "failed delete cart item",
+    };
   }
 }
