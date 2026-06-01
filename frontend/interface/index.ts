@@ -17,10 +17,8 @@ export interface IRole {
 
 export interface User {
   ID: number;
-  CreatedAt: string;
-  UpdatedAt: string;
-  DeletedAt: string | null;
   name: string;
+  image: string | null;
   email: string;
   password: string;
   role: IRole;

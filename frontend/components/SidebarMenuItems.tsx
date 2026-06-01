@@ -55,13 +55,8 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
     },
     {
       title: "Users",
-      url: "/dashboard/users",
+      url: "/admin/dashboard/users",
       icon: <Users className="size-5" />,
-    },
-    {
-      title: "Profile",
-      url: "/admin/dashboard/profile",
-      icon: <User className="size-5" />,
     },
   ];
 
