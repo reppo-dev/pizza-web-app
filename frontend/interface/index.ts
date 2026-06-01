@@ -58,3 +58,26 @@ export interface Category {
   name: string;
   slug: string;
 }
+
+export interface Cart {
+  ID: number;
+  user_id: number;
+  items: CartItem[];
+}
+
+export interface CartItem {
+  ID: number;
+  cart_id: number;
+  pizza_id: number;
+  quantity: number;
+  variant_name: string;
+  price: number;
+}
+
+export interface AddToCart {
+  cart_id: number;
+  pizza_id: number;
+  quantity: number;
+  variant_name: string;
+  price: number;
+}
