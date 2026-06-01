@@ -20,15 +20,21 @@ func GenerateJwt(userId uint) (string, error) {
 	return token.SignedString([]byte(SekretKey))
 }
 
-func ParseJwt(cookie string) (string,error) {
+func ParseJwt(cookie string) (uint,error) {
 	token,err := jwt.ParseWithClaims(cookie,&jwt.StandardClaims{},func(t *jwt.Token) (interface{}, error) {
 		return []byte(SekretKey),nil
 	})
 	if err != nil || !token.Valid {
-		return "",err
+		return 0,err
 	}
 
 	claims := token.Claims.(*jwt.StandardClaims)
 
-	return claims.Issuer , err
+	id , err := strconv.ParseUint(claims.Issuer,10,32)
+
+	if err != nil {
+		return 0,err
+	}
+
+	return uint(id) , err
 }

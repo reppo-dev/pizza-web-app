@@ -36,4 +36,8 @@ func Setup(app *fiber.App) {
 
 	app.Get("/users",controller.AllUsers)
 	app.Get("/user/:id",controller.User)
+
+	app.Get("/cart",controller.Cart)
+	app.Post("/addtocart",controller.AddToCart)
+
 }
