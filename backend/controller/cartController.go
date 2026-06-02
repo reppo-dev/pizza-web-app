@@ -72,6 +72,10 @@ func AddToCart(c *fiber.Ctx) error {
 		req.Quantity = 1
 	}
 
+	    if err := c.BodyParser(&req); err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request body"})
+    }
+
 	var cart models.Cart
 
 	result := databases.DB.Where("user_id = ?" ,userId).First(&cart)
