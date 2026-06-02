@@ -144,6 +144,10 @@ func UpdateCartItem(c *fiber.Ctx) error {
 		Quantity  int `json:"quantity"`
 	}
 
+	if err := c.BodyParser(&req) ; err !=nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request body"})
+	}
+
 	var cartitem models.CartItem
 
 	if err := databases.DB.First(&cartitem,id).Error; err != nil{

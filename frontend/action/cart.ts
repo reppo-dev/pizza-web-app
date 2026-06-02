@@ -77,7 +77,8 @@ export async function updateCartItem(id: number, quantity: number) {
       success: true,
       message: "success update quantity",
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
       success: false,
       message: "falied update quantity",
@@ -102,7 +103,8 @@ export async function deleteCartItem(itemId: number) {
       success: true,
       message: "cart item deleted",
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
       success: false,
       message: "failed delete cart item",
