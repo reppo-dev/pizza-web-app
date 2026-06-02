@@ -63,7 +63,7 @@ func AddToCart(c *fiber.Ctx) error {
 	}
 
 	 var req struct {
-		VariantID string `json:"variant_id"`
+		VariantID uint `json:"variant_id"`
         PizzaID uint   `json:"pizza_id"`
         Quantity  int  `json:"quantity"`
     }
@@ -72,7 +72,7 @@ func AddToCart(c *fiber.Ctx) error {
 		req.Quantity = 1
 	}
 
-	    if err := c.BodyParser(&req); err != nil {
+	if err := c.BodyParser(&req); err != nil {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request body"})
     }
 
@@ -123,8 +123,6 @@ func AddToCart(c *fiber.Ctx) error {
 
 		if err := databases.DB.Save(&newItem).Error; err != nil{
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed save new item"})
-		} else {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Database error"})
 		}
 	}
 
