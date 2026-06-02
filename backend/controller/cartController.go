@@ -24,7 +24,7 @@ func Cart(c *fiber.Ctx) error {
 
 	var cart models.Cart
 
-	 result := databases.DB.Where("user_id = ?",userId).Preload("items.pizzas").First(&cart)
+	 result := databases.DB.Where("user_id = ?",userId).Preload("Item.Pizza").First(&cart)
 
 	 if result.Error == gorm.ErrRecordNotFound {
 		cart = models.Cart{UserID: userId}
