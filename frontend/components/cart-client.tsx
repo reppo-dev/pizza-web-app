@@ -104,6 +104,7 @@ const CartClient = ({ initialCart }: CartClientProps) => {
                   </p>
 
                   <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                    type: {item.variant_name}
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"

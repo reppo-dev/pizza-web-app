@@ -55,6 +55,43 @@ func GetAddress(c *fiber.Ctx) error {
 	return c.JSON(address)
 }
 
+func CreateAddress(c *fiber.Ctx) error {
+	ctx,cancel:= context.WithTimeout(context.Background(),5*time.Second)
+	defer cancel()
+
+	var data models.InfoAddress
+
+	if err := c.BodyParser(&data); err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request body"})
+	}
+
+	cookie := c.Cookies("jwt")
+
+	userId , err := utils.ParseJwt(cookie)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request id"})
+	}
+
+	var address models.Address
+
+	address.UserID = userId
+	address.FullName = data.FullName
+	address.Phone = data.Phone
+	address.Province = data.Province
+	address.City = data.City
+	address.Street = data.Street
+	address.Apartment = data.Apartment
+	address.PostalCode = data.PostalCode
+	address.Notes = data.Notes
+
+	if err := databases.DB.WithContext(ctx).Create(&address).Error;err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed update address"})
+	}
+
+	return c.JSON(fiber.Map{"message":"success update address"})
+}
+
 func UpdateAddress(c *fiber.Ctx) error {
 	ctx,cancel:= context.WithTimeout(context.Background(),5*time.Second)
 	defer cancel()
@@ -99,7 +136,7 @@ func UpdateAddress(c *fiber.Ctx) error {
 
 
 func DelelteAddress(c *fiber.Ctx) error {
-	ctx,cancel:= context.WithTimeout(c.Background(),5*time.Second)
+	ctx,cancel:= context.WithTimeout(context.Background(),5*time.Second)
 	defer cancel()
 
 	cookie := c.Cookies("jwt")

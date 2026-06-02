@@ -19,5 +19,5 @@ func Conect() {
 	}
 
 	DB =db
-	db.AutoMigrate(&models.User{},&models.Role{},&models.Permission{},&models.Pizzas{},&models.Variants{},&models.CartItem{},&models.Cart{})
+	db.AutoMigrate(&models.User{},&models.Role{},&models.Permission{},&models.Pizzas{},&models.Variants{},&models.CartItem{},&models.Cart{},&models.Address{})
 }

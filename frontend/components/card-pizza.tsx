@@ -19,7 +19,6 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
     }
   }, [variants]);
   const handleAddToCart = async (id: number, variantId: number) => {
-    console.log("pizza id:", id, "variant id:", variantId, 1);
     const result = await addToCart(id, variantId, 1);
     if (result.success) {
       toast.success("Added!");
@@ -74,11 +73,10 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
         )}
         <Button
           onClick={() => {
-            console.log("clicked");
             if (activeVariant?.ID) {
               handleAddToCart(pizza.ID, activeVariant.ID);
             } else {
-              toast.error("لطفاً یک واریانت انتخاب کنید");
+              toast.error("Please selecte one varient");
             }
           }}
           disabled={!activeVariant}
