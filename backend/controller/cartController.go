@@ -104,14 +104,17 @@ func AddToCart(c *fiber.Ctx) error {
 
 	var cartitem models.CartItem
 
-	err = databases.DB.Where("cart_id = ? AND pizza_id = ?",cart.ID,pizza.ID).First(&cartitem).Error
+	err = databases.DB.Where(
+    "cart_id = ? AND pizza_id = ? AND variant_name = ?",cart.ID,pizza.ID,variant.Type,).First(&cartitem).Error
 
 	if err == nil{
-		cartitem.Quantity += req.Quantity
+    cartitem.Quantity += req.Quantity
 
-		if err := databases.DB.Save(&cartitem).Error; err != nil{
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed to update"})
-		}
+    if err := databases.DB.Save(&cartitem).Error; err != nil {
+        return c.Status(fiber.StatusInternalServerError).
+            JSON(fiber.Map{"error":"Failed to update"})
+    }
+		
 	} else if err == gorm.ErrRecordNotFound {
 		newItem := models.CartItem{
 			CartID: cart.ID,
