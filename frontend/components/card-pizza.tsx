@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
 import type { Pizza } from "@/interface";
+import { addToCart } from "@/action/cart";
+import { toast } from "sonner";
 
 const CardPizza = ({ pizza }: { pizza: Pizza }) => {
   const variants = pizza.variants ?? [];
@@ -16,6 +18,15 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
       setActiveVariant(variants[0]);
     }
   }, [variants]);
+  const handleAddToCart = async (id: number, variantId: number) => {
+    console.log("pizza id:", id, "variant id:", variantId, 1);
+    const result = await addToCart(id, variantId, 1);
+    if (result.success) {
+      toast.success("Added!");
+    } else {
+      toast.error(result.message);
+    }
+  };
 
   return (
     <Card>
@@ -61,6 +72,19 @@ const CardPizza = ({ pizza }: { pizza: Pizza }) => {
             No variants available.
           </div>
         )}
+        <Button
+          onClick={() => {
+            console.log("clicked");
+            if (activeVariant?.ID) {
+              handleAddToCart(pizza.ID, activeVariant.ID);
+            } else {
+              toast.error("لطفاً یک واریانت انتخاب کنید");
+            }
+          }}
+          disabled={!activeVariant}
+        >
+          Add To Cart
+        </Button>
       </CardContent>
     </Card>
   );

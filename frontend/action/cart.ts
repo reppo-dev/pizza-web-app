@@ -32,31 +32,30 @@ export async function getCart() {
 }
 
 export async function addToCart(
-  pizzaId: number,
-  varientId: number,
+  pizza_id: number,
+  variant_id: number,
   quantity: number = 1,
 ) {
   try {
-    if (!pizzaId || !varientId || !quantity) {
-      return { success: false, message: "Valid not required" };
-    }
     const token = await getToken();
     if (!token) return { success: false, message: "Not authenticated" };
 
     const response = await axios.post(
       `${GO_API_URL}/addtocart`,
-      JSON.stringify({ variant_id: varientId, pizza_id: pizzaId, quantity }),
+      JSON.stringify({ variant_id, pizza_id, quantity }),
       {
         headers: authHeaders(token),
       },
     );
     console.log(response.data);
 
+    console.log(response);
     return {
       success: true,
       message: "success add pizza to cart item",
     };
-  } catch {
+  } catch (error) {
+    console.error("addToCart error:", error);
     return { success: false, message: "Failed added pizza to cart item" };
   }
 }
