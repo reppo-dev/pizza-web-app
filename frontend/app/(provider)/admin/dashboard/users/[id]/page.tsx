@@ -3,17 +3,32 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getInfoUser } from "@/action/user";
-import { User } from "@/interface";
+import { Address, User } from "@/interface";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { allAddressById } from "@/action/address";
+import CartAddress from "@/components/cart-address";
 
 const UserDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [address, setAddress] = useState<Address[]>([]);
+
+  console.log(address);
+  useEffect(() => {
+    if (!user?.ID) return;
+
+    const fetchAddress = async () => {
+      const response = await allAddressById(user.ID);
+      setAddress(response.data);
+    };
+
+    fetchAddress();
+  }, [user?.ID]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -33,7 +48,6 @@ const UserDetailPage = () => {
       </div>
     );
   }
-
   if (!user) {
     return (
       <div className="text-center p-6">
@@ -49,42 +63,47 @@ const UserDetailPage = () => {
     .toUpperCase();
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <Card>
-        <CardHeader className="flex flex-row items-center gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={user.image || undefined} alt={user.name} />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-          <div>
-            <h1 className="text-2xl font-bold">{user.name}</h1>
-            <p className="text-muted-foreground">{user.email}</p>
-          </div>
-        </CardHeader>
-        <Separator />
-        <CardContent className="pt-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+    <div>
+      <div className="max-w-2xl ml-4 p-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-4">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={user.image || undefined} alt={user.name} />
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
             <div>
-              <p className="text-sm text-muted-foreground">Role</p>
-              <Badge
-                variant={
-                  user.role.name === "admin" ? "destructive" : "secondary"
-                }
-              >
-                {user.role.name}
-              </Badge>
+              <h1 className="text-2xl font-bold">{user.name}</h1>
+              <p className="text-muted-foreground">{user.email}</p>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Permission</p>
-              <p className="font-medium">{user.role.permission}</p>
+          </CardHeader>
+          <Separator />
+          <CardContent className="pt-6 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Role</p>
+                <Badge
+                  variant={
+                    user.role.name === "admin" ? "destructive" : "secondary"
+                  }
+                >
+                  {user.role.name}
+                </Badge>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Permission</p>
+                <p className="font-medium">{user.role.permission}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">User ID</p>
+                <p className="font-medium">{user.ID}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">User ID</p>
-              <p className="font-medium">{user.ID}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="mx-auto p-6">
+        <CartAddress cartAddress={address} />
+      </div>
     </div>
   );
 };

@@ -75,3 +75,26 @@ export interface CartItem {
   variant_name: string;
   price: number;
 }
+
+export interface Address {
+  ID: number;
+  full_name: string;
+  phone: string;
+  province: string;
+  city: string;
+  street: string;
+  apartment: string;
+  postal_code: string;
+  delivery_notes: string;
+}
+
+export interface InfoAddress {
+  full_name: string;
+  phone: string;
+  province: string;
+  city: string;
+  street: string;
+  apartment: string;
+  postal_code: string;
+  delivery_notes: string;
+}
