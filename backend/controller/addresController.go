@@ -97,3 +97,32 @@ func UpdateAddress(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message":"success update address"})
 }
 
+
+func DelelteAddress(c *fiber.Ctx) error {
+	ctx,cancel:= context.WithTimeout(c.Background(),5*time.Second)
+	defer cancel()
+
+	cookie := c.Cookies("jwt")
+
+	userId , err := utils.ParseJwt(cookie)
+
+	id , err := strconv.Atoi(c.Params("id"))
+
+	if err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request id"})
+	}
+
+	var address models.Address
+
+	if err := databases.DB.WithContext(ctx).Where("id = ? AND user_id = ?", id,userId).First(&address).Error; err != nil{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error":"Failed found address"})
+	}
+
+	if err := databases.DB.WithContext(ctx).Delete(&address).Error; err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed delete address"})
+	}
+
+
+	return c.JSON(fiber.Map{"message":"success delete address"})
+
+}

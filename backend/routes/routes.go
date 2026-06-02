@@ -41,4 +41,10 @@ func Setup(app *fiber.App) {
 	app.Post("/addtocart",controller.AddToCart)
 	app.Put("/updatecartitem/:id",controller.UpdateCartItem)
 	app.Delete("/deletecartitem/:id",controller.DeleteCartItem)
+
+	app.Get("/getalladdress",controller.GetAllAddress)
+	app.Get("/getaddress/:id",controller.GetAddress)
+	app.Post("/createaddress")
+	app.Put("/updateaddress",controller.UpdateAddress)
+	app.Delete("/deleteaddress/:id",controller.DelelteAddress)
 }
