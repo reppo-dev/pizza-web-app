@@ -63,12 +63,14 @@ export interface Cart {
   ID: number;
   user_id: number;
   items: CartItem[];
+  total?: number;
 }
 
 export interface CartItem {
   ID: number;
   cart_id: number;
   pizza_id: number;
+  pizza: Pizza;
   quantity: number;
   variant_name: string;
   price: number;

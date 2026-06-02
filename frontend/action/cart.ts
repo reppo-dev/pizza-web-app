@@ -1,6 +1,5 @@
 "use server";
 
-import { AddToCart } from "@/interface";
 import axios from "axios";
 import { getToken } from "./token";
 
