@@ -16,6 +16,7 @@ import { allCategory } from "@/action/category";
 import { s3UploadAction } from "@/action/s3BucketAction";
 import Image from "next/image";
 import { FieldGroup } from "./ui/field";
+import { useRouter } from "next/navigation";
 
 const pizzaSchama = z.object({
   name: z.string().min(2, ""),
@@ -34,6 +35,7 @@ const CartCreatePizza = () => {
     [],
   );
   const [isImagePath, setIsImagePath] = useState(``);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -83,17 +85,14 @@ const CartCreatePizza = () => {
     try {
       setIsLoading(true);
       const result = await createPizza(data);
-      if (result.success) {
-        toast("Create Pizza success");
-        form.reset();
-        setSelectedCategory([]);
-        setIsImagePath("");
-      } else {
-        toast("Failed create pizza");
-      }
+
+      toast("Create Pizza success");
+      form.reset();
+      setSelectedCategory([]);
+      setIsImagePath("");
+      router.push("/admin/dashboard/pizzas");
     } catch (error) {
       console.log(error);
-      toast("Something wrong");
     } finally {
       setIsLoading(false);
     }
@@ -209,7 +208,7 @@ const CartCreatePizza = () => {
                     disabled={isLoading}
                     className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                   >
-                    {isLoading ? "Creating account..." : "Sign Up"}
+                    {isLoading ? "Creating pizza..." : "Create Pizza"}
                   </Button>
                 </div>
               </FieldGroup>

@@ -29,10 +29,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token = await getToken();
-
-  console.log(token);
-
   return (
     <html lang="en">
       <body

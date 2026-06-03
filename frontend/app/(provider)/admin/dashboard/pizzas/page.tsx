@@ -1,7 +1,6 @@
 import { searchPizza } from "@/action/search";
 import CardPizza from "@/components/card-pizza";
 import CardSearch from "@/components/card-search";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,14 +38,9 @@ const PizzaPage = async ({ searchParams }: PizzaPageProps) => {
         ))}
 
         <DropdownMenu>
-          <DropdownMenuTrigger
-            className="fixed flex items-center gap-2 bottom-10 right-10 shadow-lg"
-            asChild
-          >
-            <Button variant="default" size="lg">
-              <Plus className="h-4 w-4" />
-              Create
-            </Button>
+          <DropdownMenuTrigger className="fixed flex items-center justify-center bg-primary rounded-xl text-white w-24 h-10  bottom-10 right-10 shadow-md">
+            <Plus className="h-4 w-4" />
+            Create
           </DropdownMenuTrigger>
 
           <DropdownMenuContent className="w-48" align="end">

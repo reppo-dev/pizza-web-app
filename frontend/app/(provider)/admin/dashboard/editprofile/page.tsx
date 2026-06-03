@@ -217,7 +217,7 @@ const EditProfile = () => {
                   )}
                 />
                 <Button disabled={isLoading}>
-                  {isLoading ? "Updating ..." : "update"}
+                  {isLoading ? "Updating ..." : "Update"}
                 </Button>
               </FieldGroup>
             </form>

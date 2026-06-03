@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const categorySchama = z.object({
   name: z.string().min(1, "It cannot be empty"),
@@ -27,6 +28,7 @@ type FormCategorySchama = z.infer<typeof categorySchama>;
 
 const CreateCategory = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<FormCategorySchama>({
     resolver: zodResolver(categorySchama),
@@ -42,6 +44,7 @@ const CreateCategory = () => {
       const result = await createCategory(data);
       if (result.success) {
         toast("Create category success");
+        router.push("/admin/dashboard/pizzas");
       } else {
         toast("Failed create category");
         console.log(result.message);
@@ -94,7 +97,7 @@ const CreateCategory = () => {
                   disabled={isLoading}
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  {isLoading ? "Creating account..." : "Sign Up"}
+                  {isLoading ? "Creating category..." : "Create Categroty"}
                 </Button>
               </div>
             </form>

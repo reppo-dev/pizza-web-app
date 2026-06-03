@@ -28,11 +28,12 @@ export async function createPizza(payload: CreatePizza) {
     ) {
       return {
         success: false,
-        message: "failed to required all data!!!", //my english ha ha ha :/    this project for trayning
+        message: "failed to required all data!!!",
       };
     }
 
     const result = await axios.post(`${GO_API_URL}/createpizza`, payload);
+
     return {
       success: true,
       data: result,

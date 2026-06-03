@@ -180,7 +180,7 @@ func SearchPizza(c *fiber.Ctx) error {
 
 	query := strings.TrimSpace(c.Query("q"))
 
-	dbQuery := databases.DB.WithContext(ctx).Model(&models.Pizzas{})
+	dbQuery := databases.DB.WithContext(ctx).Model(&models.Pizzas{}).Preload("Variants")
 
 dbQuery = dbQuery.Where(
     "name ILIKE ? OR description ILIKE ?",

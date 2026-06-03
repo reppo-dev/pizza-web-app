@@ -6,11 +6,14 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getAllPizzas } from "@/action/pizza";
 import CardPizza from "@/components/card-pizza";
 import { Pizza } from "@/interface";
+import { getToken } from "@/action/token";
 
 export default async function HomePage() {
   const getPizza = await getAllPizzas();
 
   const pizzas: Pizza[] = getPizza.data.slice(0, 4);
+
+  const token = await getToken();
   return (
     <div className="min-h-screen bg-white text-gray-800">
       <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
@@ -23,14 +26,31 @@ export default async function HomePage() {
             NextPizza
           </Link>
 
-          <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
-            <Link href="/" className="transition-colors hover:text-primary">
-              Home
-            </Link>
-            <Link href="/" className="transition-colors hover:text-primary">
-              About
-            </Link>
-          </nav>
+          {token ? (
+            <nav className="flex gap-4 items-center  text-sm font-medium">
+              <Link href="/" className="transition-colors hover:text-primary">
+                <Button variant={"outline"}>Home</Button>
+              </Link>
+              <Link href="/" className="transition-colors hover:text-primary">
+                <Button variant={"outline"}>About</Button>
+              </Link>
+            </nav>
+          ) : (
+            <nav className="flex gap-4">
+              <Link
+                href="/login"
+                className="transition-colors hover:text-primary"
+              >
+                <Button>Login</Button>
+              </Link>
+              <Link
+                href="/register"
+                className="transition-colors hover:text-primary"
+              >
+                <Button variant={"outline"}>Sign Up</Button>
+              </Link>
+            </nav>
+          )}
         </div>
       </header>
       <main>
