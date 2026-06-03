@@ -1,16 +1,16 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Menu, X } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { getAllPizzas } from "@/action/pizza";
+import CardPizza from "@/components/card-pizza";
+import { Pizza } from "@/interface";
 
-export default function HomePage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+export default async function HomePage() {
+  const getPizza = await getAllPizzas();
 
+  const pizzas: Pizza[] = getPizza.data.slice(0, 4);
   return (
     <div className="min-h-screen bg-white text-gray-800">
       <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
@@ -20,91 +20,18 @@ export default function HomePage() {
             href="/"
             className="text-2xl font-black tracking-tight text-primary"
           >
-            SliceHouse
+            NextPizza
           </Link>
 
           <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
             <Link href="/" className="transition-colors hover:text-primary">
               Home
             </Link>
-            <Link href="/menu" className="transition-colors hover:text-primary">
-              Menu
-            </Link>
-            <Link
-              href="/deals"
-              className="transition-colors hover:text-primary"
-            >
-              Deals
-            </Link>
-            <Link
-              href="/about"
-              className="transition-colors hover:text-primary"
-            >
+            <Link href="/" className="transition-colors hover:text-primary">
               About
             </Link>
           </nav>
-          <div className="hidden md:block">
-            <Button
-              asChild
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <Link href="/order">Order Now</Link>
-            </Button>
-          </div>
-          <button
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
         </div>
-        {mobileMenuOpen && (
-          <div className="border-t bg-white px-6 py-4 md:hidden">
-            <nav className="flex flex-col gap-4">
-              <Link
-                href="/"
-                className="font-medium transition-colors hover:text-primary"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                href="/menu"
-                className="font-medium transition-colors hover:text-primary"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Menu
-              </Link>
-              <Link
-                href="/deals"
-                className="font-medium transition-colors hover:text-primary"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Deals
-              </Link>
-              <Link
-                href="/about"
-                className="font-medium transition-colors hover:text-primary"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                About
-              </Link>
-              <Button
-                asChild
-                className="mt-2 bg-primary text-primary-foreground"
-              >
-                <Link href="/order" onClick={() => setMobileMenuOpen(false)}>
-                  Order Now
-                </Link>
-              </Button>
-            </nav>
-          </div>
-        )}
       </header>
       <main>
         <section className="relative flex min-h-[85vh] items-center justify-center bg-linear-to-br from-red-50 to-amber-50 px-6 py-20">
@@ -116,18 +43,6 @@ export default function HomePage() {
               Fresh dough, premium toppings, and lightning‑fast delivery. Your
               pizza is just a tap away.
             </p>
-            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button
-                size="lg"
-                asChild
-                className="bg-primary text-primary-foreground"
-              >
-                <Link href="/order">Order Now</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/menu">View Full Menu</Link>
-              </Button>
-            </div>
           </div>
           <div className="absolute inset-0 opacity-10">
             <Image
@@ -184,34 +99,8 @@ export default function HomePage() {
               Bestselling Pizzas
             </h2>
             <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { name: "Margherita", price: "$11.99", img: "🍕" },
-                { name: "Pepperoni", price: "$13.99", img: "🍕" },
-                { name: "Hawaiian", price: "$14.99", img: "🍕" },
-                { name: "BBQ Chicken", price: "$15.99", img: "🍕" },
-              ].map((pizza, idx) => (
-                <Link href="/menu" key={idx}>
-                  <Card className="group cursor-pointer transition-all hover:-translate-y-1 hover:shadow-xl">
-                    <CardContent className="flex flex-col items-center p-6">
-                      <div className="mb-4 flex h-28 w-28 items-center justify-center rounded-full bg-white text-6xl shadow-inner">
-                        {pizza.img}
-                      </div>
-                      <h3 className="text-lg font-bold text-primary group-hover:text-red-700">
-                        {pizza.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">12″ • serves 2</p>
-                      <p className="mt-2 text-2xl font-black text-gray-900">
-                        {pizza.price}
-                      </p>
-                      <Button
-                        size="sm"
-                        className="mt-4 bg-primary text-primary-foreground"
-                      >
-                        Add to Cart
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+              {pizzas.map((pizza) => (
+                <CardPizza key={pizza.ID} pizza={pizza} />
               ))}
             </div>
           </div>
@@ -239,22 +128,8 @@ export default function HomePage() {
         <div className="container mx-auto px-6 py-10">
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <Link href="/" className="text-xl font-black text-primary">
-              SliceHouse
+              NextPizza
             </Link>
-            <div className="flex gap-8 text-sm">
-              <Link href="/menu" className="hover:text-white">
-                Menu
-              </Link>
-              <Link href="/deals" className="hover:text-white">
-                Deals
-              </Link>
-              <Link href="/about" className="hover:text-white">
-                About
-              </Link>
-              <Link href="/contact" className="hover:text-white">
-                Contact
-              </Link>
-            </div>
           </div>
           <div className="mt-8 text-center text-xs text-gray-500">
             © {new Date().getFullYear()} SliceHouse. All pizzas served hot.
