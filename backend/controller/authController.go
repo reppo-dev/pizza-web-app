@@ -81,6 +81,42 @@ func GetUser(c *fiber.Ctx) error {
 	
 }
 
+func UpdateUser(c *fiber.Ctx) error {
+	ctx,cancel := context.WithTimeout(context.Background(),5 * time.Second)
+	defer cancel()
+
+	var data models.InfoUser
+
+	cookie := c.Cookies("jwt")
+
+	id,err := utils.ParseJwt(cookie)
+
+	if err!=nil {
+		return  c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error":"Invalid or expire token"})
+	}
+
+	var user models.User
+
+	if err := c.BodyParser(&data); err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid request body"})
+	}
+
+	if err := databases.DB.WithContext(ctx).First(&user,id).Error; err != nil{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error":"Failed found user"})
+	}
+
+	user.Email = data.Email
+	user.Image = data.Image
+	user.Name = data.Name
+	user.RoleID = data.RoleID
+
+	if err := databases.DB.WithContext(ctx).Save(&user).Error; err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Failed update user"})
+	}
+
+	return c.JSON(fiber.Map{"message":"Success update user"})
+}
+
 func Login(c *fiber.Ctx) error {
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()

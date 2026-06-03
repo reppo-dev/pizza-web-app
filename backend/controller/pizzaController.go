@@ -5,6 +5,7 @@ import (
 	"backend/models"
 	"context"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -170,4 +171,28 @@ func DeletePizza(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message":"delete succes",
 	})
+}
+
+
+func SearchPizza(c *fiber.Ctx) error {
+	ctx,cancel := context.WithTimeout(context.Background(),5 *time.Second)
+	defer cancel()
+
+	query := strings.TrimSpace(c.Query("q"))
+
+	dbQuery := databases.DB.WithContext(ctx).Model(&models.Pizzas{})
+
+dbQuery = dbQuery.Where(
+    "name ILIKE ? OR description ILIKE ?",
+    "%"+query+"%",
+    "%"+query+"%",
+)
+
+	var pizza []models.Pizzas
+
+	if err:= dbQuery.Find(&pizza).Error;err !=nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error":"Search failed"})
+	}
+	
+	return c.JSON(pizza)
 }

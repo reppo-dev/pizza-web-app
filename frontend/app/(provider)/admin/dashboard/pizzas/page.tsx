@@ -1,5 +1,6 @@
-import { getAllPizzas } from "@/action/pizza";
+import { searchPizza } from "@/action/search";
 import CardPizza from "@/components/card-pizza";
+import CardSearch from "@/components/card-search";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,70 +15,84 @@ import type { Pizza as PizzaType } from "@/interface";
 import { FolderPlus, Layers, Pizza, Plus } from "lucide-react";
 import Link from "next/link";
 
-const PizzaPage = async () => {
-  const pizzaData = await getAllPizzas();
-  const p: PizzaType[] = pizzaData.data;
+interface PizzaPageProps {
+  searchParams: Promise<{
+    q?: string;
+  }>;
+}
+
+const PizzaPage = async ({ searchParams }: PizzaPageProps) => {
+  const { q = "" } = await searchParams;
+
+  const pizzaData = await searchPizza(q);
+
+  const pizzas: PizzaType[] = pizzaData.data || [];
+
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mx-4">
-      {p.map((pizza) => (
-        <CardPizza key={pizza.ID} pizza={pizza} />
-      ))}
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          className="fixed flex items-center gap-2 bottom-10 right-10 shadow-lg"
-          asChild
-        >
-          <Button variant="default" size="lg">
-            <Plus className="h-4 w-4" />
-            Create
-          </Button>
-        </DropdownMenuTrigger>
+    <div>
+      <div className="ml-4 my-4">
+        <CardSearch />
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mx-4">
+        {pizzas.map((pizza) => (
+          <CardPizza key={pizza.ID} pizza={pizza} />
+        ))}
 
-        <DropdownMenuContent className="w-48" align="end">
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <Link
-                href="/admin/dashboard/createpizza"
-                className="flex items-center gap-2"
-              >
-                <Pizza className="h-4 w-4" />
-                Add Pizza
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                href="/admin/dashboard/createvariant"
-                className="flex items-center gap-2"
-              >
-                <Layers className="h-4 w-4" />
-                Add Variant
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                href="/admin/dashboard/createcategory"
-                className="flex items-center gap-2"
-              >
-                <FolderPlus className="h-4 w-4" />
-                Add Category
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className="fixed flex items-center gap-2 bottom-10 right-10 shadow-lg"
+            asChild
+          >
+            <Button variant="default" size="lg">
+              <Plus className="h-4 w-4" />
+              Create
+            </Button>
+          </DropdownMenuTrigger>
 
-          <DropdownMenuSeparator />
+          <DropdownMenuContent className="w-48" align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
 
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <span className="flex items-center gap-2">
-                {/* آیکون‌های فرضی برای Team و Subscription */}
-                Team
-              </span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/admin/dashboard/createpizza"
+                  className="flex items-center gap-2"
+                >
+                  <Pizza className="h-4 w-4" />
+                  Add Pizza
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/admin/dashboard/createvariant"
+                  className="flex items-center gap-2"
+                >
+                  <Layers className="h-4 w-4" />
+                  Add Variant
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/admin/dashboard/createcategory"
+                  className="flex items-center gap-2"
+                >
+                  <FolderPlus className="h-4 w-4" />
+                  Add Category
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuGroup>
+              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuItem>Subscription</DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 };

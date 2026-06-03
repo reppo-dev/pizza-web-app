@@ -49,11 +49,6 @@ export function SidebarMenuItems({ role }: SidebarMenuItemsProps) {
       icon: <ShoppingCart className="size-5" />,
     },
     {
-      title: "Customers",
-      url: "/admin/dashboard/customers",
-      icon: <Users className="size-5" />,
-    },
-    {
       title: "Users",
       url: "/admin/dashboard/users",
       icon: <Users className="size-5" />,

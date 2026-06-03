@@ -5,6 +5,8 @@ import ProfileCard from "@/components/functional/profile-card";
 import { validateJwtTokenAndGetUser } from "@/action/token";
 import { User } from "@/interface";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState<User | null>(null);
@@ -48,7 +50,16 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {!loading && !error && <ProfileCard user={user!} />}
+      {!loading && !error && (
+        <div className="flex justify-center items-center">
+          <ProfileCard user={user!} />
+        </div>
+      )}
+      <div className="fixed bottom-10 right-10">
+        <Link href={"/admin/dashboard/editprofile"}>
+          <Button>Edit Profile</Button>
+        </Link>
+      </div>
     </div>
   );
 }

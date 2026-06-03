@@ -13,12 +13,15 @@ func Setup(app *fiber.App) {
 	app.Post("/login",controller.Login)
 
 	app.Get("/getuser",controller.GetUser)
+	app.Put("/updateuser",controller.UpdateUser)
+	app.Put("/updateuseryid/:id",controller.UpdateUserById)
 
 	app.Get("/allpizza",controller.AllPizza)
 	app.Get("/getpizza/:id",controller.GetPizza)
 	app.Post("/createpizza",controller.CreatePizza)
 	app.Put("/updatepizza/:id",controller.UpdatePizza)
 	app.Delete("/deletepizza/:id",controller.DeletePizza)
+	app.Get("/searchpizzas",controller.SearchPizza)
 
 	app.Get("/allvariant",controller.AllVariants)
 	app.Get("/getvariant/:id",controller.GetVariants)
@@ -48,4 +51,6 @@ func Setup(app *fiber.App) {
 	app.Post("/createaddress",controller.CreateAddress)
 	app.Put("/updateaddress/:id",controller.UpdateAddress)
 	app.Delete("/deleteaddress/:id",controller.DelelteAddress)
+
+	app.Get("/allroles",controller.AllRoles)
 }

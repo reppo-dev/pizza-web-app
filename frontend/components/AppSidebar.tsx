@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GalleryVerticalEnd, HelpCircle, Pizza } from "lucide-react";
+import { GalleryVerticalEnd, HelpCircle, Pizza, PizzaIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -46,7 +46,7 @@ export async function AppSidebar({
             <SidebarMenuButton size="lg" asChild>
               <Link href={"/"}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <GalleryVerticalEnd className="size-4" />
+                  <PizzaIcon className="size-4" />
                 </div>
                 {token && (
                   <div className="flex flex-col gap-0.5 leading-none">

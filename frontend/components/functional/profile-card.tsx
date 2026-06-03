@@ -1,15 +1,23 @@
 import { User } from "@/interface";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
 const ProfileCard = ({ user }: { user: User }) => {
   return (
     <Card className="w-full max-w-sm shadow-md">
-      <CardHeader>
+      <CardHeader className="justify-center">
+        <Image
+          className="rounded-full"
+          src={user?.image || ""}
+          width={250}
+          height={250}
+          alt={user.name}
+        />
+      </CardHeader>
+      <CardContent className="space-y-2 text-sm">
         <CardTitle className="text-primary text-xl font-bold">
           {user.name}
         </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2 text-sm">
         <div>
           <span className="text-gray-500">Email:</span>{" "}
           <span className="font-medium">{user.email}</span>

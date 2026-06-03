@@ -1,6 +1,6 @@
 "use server";
 
-import { Variant } from "@/interface";
+import { InfoVariant, Variant } from "@/interface";
 import axios from "axios";
 
 const GO_API_URL = process.env.GO_API_URL;
@@ -21,7 +21,7 @@ export async function getAllVariants() {
   }
 }
 
-export async function createVarient(payload: Variant) {
+export async function createVarient(payload: InfoVariant) {
   try {
     if (!payload.type || !payload.price || !payload.pizza_id) {
       return {

@@ -24,6 +24,13 @@ export interface User {
   role: IRole;
 }
 
+export interface InfoUser {
+  name: string;
+  image: string | null;
+  email: string;
+  role_id: number;
+}
+
 export interface LoginUser {
   id: string;
   email: string;
@@ -32,6 +39,12 @@ export interface LoginUser {
 
 export interface Variant {
   ID: number;
+  type: string;
+  price: number;
+  pizza_id: number;
+}
+
+export interface InfoVariant {
   type: string;
   price: number;
   pizza_id: number;

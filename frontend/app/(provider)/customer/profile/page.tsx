@@ -1,6 +1,8 @@
 // app/(provider)/customer/pizzas/page.tsx
 import { validateJwtTokenAndGetUser } from "@/action/token";
 import ProfileCard from "@/components/functional/profile-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function PizzasPage() {
   const result = await validateJwtTokenAndGetUser();
@@ -19,8 +21,14 @@ export default async function PizzasPage() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold text-primary mb-6">Your Pizzas</h1>
-      <ProfileCard user={result.user} />
-      {/* rest of your page */}
+      <div className="flex justify-center items-center">
+        <ProfileCard user={result.user} />
+      </div>
+      <div className="fixed bottom-10 right-10">
+        <Link href={"/customer/profile/editprofile"}>
+          <Button>Edit Profile</Button>
+        </Link>
+      </div>
     </div>
   );
 }

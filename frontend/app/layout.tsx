@@ -7,6 +7,7 @@ import { getToken } from "@/action/token";
 import { AutoCloseSidebar } from "@/components/AutoCloseSidebar";
 import { GlobalSpinner } from "./globalSpinner";
 import { Toaster } from "@/components/ui/sonner";
+import { getUserId } from "@/action/user";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default async function RootLayout({
   const token = await getToken();
 
   console.log(token);
+
   return (
     <html lang="en">
       <body

@@ -12,6 +12,13 @@ type User struct {
     Role            Role    	`json:"role" gorm:"foreignKey:RoleId"`
 }
 
+type InfoUser struct {
+    Name            string      `json:"name"`
+    Email           string      `json:"email"`
+    Image           string      `json:"image"`
+	RoleID          uint    	`json:"role_id"`
+}
+
 type RegisterUser struct {
     Name     		string      `json:"name"`
     Email    		string      `json:"email"`

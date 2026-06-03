@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { allAddressById } from "@/action/address";
 import CartAddress from "@/components/cart-address";
+import Link from "next/link";
 
 const UserDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -65,41 +66,43 @@ const UserDetailPage = () => {
   return (
     <div>
       <div className="max-w-2xl ml-4 p-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center gap-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={user.image || undefined} alt={user.name} />
-              <AvatarFallback>{initials}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-2xl font-bold">{user.name}</h1>
-              <p className="text-muted-foreground">{user.email}</p>
-            </div>
-          </CardHeader>
-          <Separator />
-          <CardContent className="pt-6 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+        <Link href={`/admin/dashboard/users/updateuser/${user.ID}`}>
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <Avatar className="h-16 w-16">
+                <AvatarImage src={user.image || undefined} alt={user.name} />
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
               <div>
-                <p className="text-sm text-muted-foreground">Role</p>
-                <Badge
-                  variant={
-                    user.role.name === "admin" ? "destructive" : "secondary"
-                  }
-                >
-                  {user.role.name}
-                </Badge>
+                <h1 className="text-2xl font-bold">{user.name}</h1>
+                <p className="text-muted-foreground">{user.email}</p>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Permission</p>
-                <p className="font-medium">{user.role.permission}</p>
+            </CardHeader>
+            <Separator />
+            <CardContent className="pt-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Role</p>
+                  <Badge
+                    variant={
+                      user.role.name === "admin" ? "destructive" : "secondary"
+                    }
+                  >
+                    {user.role.name}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Permission</p>
+                  <p className="font-medium">{user.role.permission}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">User ID</p>
+                  <p className="font-medium">{user.ID}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">User ID</p>
-                <p className="font-medium">{user.ID}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
       <div className="mx-auto p-6">
         <CartAddress cartAddress={address} />
